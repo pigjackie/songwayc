@@ -1,124 +1,976 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>宋維國文管理系統</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080c14;
+      --panel: #0e1420;
+      --panel-2: #141d30;
+      --line: #1e2d4a;
+      --gold: #c9a84c;
+      --gold-light: #e8c96d;
+      --gold-dim: #8a6f2e;
+      --text: #f0ede6;
+      --muted: #7a8499;
+      --red: #c0392b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 10% 0%, rgba(201,168,76,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 100%, rgba(20,30,60,0.8) 0%, transparent 60%),
+        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(30,45,74,0.15) 60px, rgba(30,45,74,0.15) 61px),
+        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(30,45,74,0.08) 60px, rgba(30,45,74,0.08) 61px);
+      color: var(--text);
+      font-family: 'Noto Serif TC', serif;
+      min-height: 100vh;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 4px; }
+
+    /* ── CARDS ── */
+    .luxe-card {
+      background: linear-gradient(145deg, rgba(14,20,32,0.97), rgba(10,15,24,0.97));
+      border: 1px solid var(--line);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201,168,76,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .luxe-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .gold-title {
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      font-family: 'Playfair Display', 'Noto Serif TC', serif;
+      text-shadow: 0 0 20px rgba(201,168,76,0.3);
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ── INPUTS ── */
+    .input, select, textarea {
+      width: 100%;
+      background: rgba(8,12,20,0.8);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .input:focus, select:focus, textarea:focus {
+      border-color: var(--gold-dim);
+      box-shadow: 0 0 0 2px rgba(201,168,76,0.1);
+    }
+    select option { background: var(--panel); }
+
+    /* ── BUTTONS ── */
+    .btn {
+      border-radius: 8px;
+      padding: 10px 16px;
+      color: white;
+      font-size: 14px;
+      font-family: 'Noto Serif TC', serif;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.03em;
+    }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #8a6f2e, #c9a84c, #8a6f2e);
+      background-size: 200% 100%;
+      color: #080c14;
+      font-weight: 700;
+      border: 1px solid var(--gold-dim);
+      transition: background-position 0.3s, transform 0.1s;
+    }
+    .btn-gold:hover { background-position: right; opacity: 1; }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(8,12,20,0.92);
+      backdrop-filter: blur(12px);
+    }
+    .header-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 20px rgba(201,168,76,0.4);
+    }
+
+    /* ── NAV ── */
+    .nav-item {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--muted);
+      transition: all 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .nav-item:hover { color: var(--gold-light); border-color: var(--line); background: rgba(201,168,76,0.05); }
+    .nav-item.active { color: var(--gold); border-color: var(--gold-dim); background: rgba(201,168,76,0.08); }
+
+    /* ── CALENDAR ── */
+    .calendar-grid { display: grid; grid-template-columns: 72px 1fr; max-height: 560px; overflow: auto; }
+    .time-cell { border-right: 1px solid var(--line); border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); padding: 8px; background: rgba(8,12,20,0.9); font-family: 'JetBrains Mono', monospace; }
+    .slot-cell { border-top: 1px solid var(--line); padding: 6px 10px; min-height: 40px; background: rgba(10,14,22,0.6); }
+    .event-pill { background: linear-gradient(135deg, rgba(138,111,46,0.3), rgba(201,168,76,0.15)); border: 1px solid var(--gold-dim); border-radius: 6px; font-size: 11px; padding: 4px 8px; margin-bottom: 4px; color: var(--gold-light); }
+
+    /* ── SECTION PANELS ── */
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+
+    /* ── DIVIDER ── */
+    .gold-divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      margin: 16px 0;
+    }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+    .badge-admin { background: rgba(201,168,76,0.15); border: 1px solid var(--gold-dim); color: var(--gold); }
+    .badge-teacher { background: rgba(30,45,74,0.8); border: 1px solid var(--line); color: var(--muted); }
+
+    /* ── USER TABLE ── */
+    .user-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .user-row:last-child { border-bottom: none; }
+    .user-row:hover { background: rgba(201,168,76,0.03); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-box {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%; max-width: 440px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .modal-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+    }
+
+    /* ── MSG ── */
+    .msg-ok { color: #6ee7b7; font-size: 13px; }
+    .msg-err { color: #fca5a5; font-size: 13px; }
+
+    /* ── TODO ── */
+    .todo-done { text-decoration: line-through; opacity: 0.5; }
+
+    /* ── INSTITUTE CARD ── */
+    .ins-card {
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8,12,20,0.7);
+      transition: border-color 0.2s;
+    }
+    .ins-card:hover { border-color: var(--gold-dim); }
+
+    /* ── LOGIN ── */
+    #loginView {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      width: 100%; max-width: 400px;
+      background: linear-gradient(160deg, rgba(14,20,32,0.98), rgba(8,12,20,0.98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 40px 32px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 60px rgba(201,168,76,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .login-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .login-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(201,168,76,0.5);
+      text-align: center;
+      margin-bottom: 4px;
+      letter-spacing: 0.1em;
+    }
+    .login-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      margin-bottom: 32px;
+    }
+    .ornament {
+      text-align: center;
+      color: var(--gold-dim);
+      font-size: 18px;
+      margin: 8px 0;
+      letter-spacing: 8px;
+    }
+  </style>
 </head>
 <body>
-  <div id="app" class="min-h-screen">
-    <section id="loginView" class="min-h-screen flex items-center justify-center p-6">
-      <div class="w-full max-w-md luxe-card rounded-2xl p-6">
-        <h1 class="text-2xl font-bold gold-title mb-1">宋維國文管理系統</h1>
-        <p class="text-sm text-slate-300 mb-6">教師排程、打卡薪資、教務行政一體化平台</p>
-        <form id="loginForm" class="space-y-4">
-          <input id="email" type="email" required class="input" placeholder="Email" />
-          <input id="password" type="password" required class="input" placeholder="Password" />
-          <button class="btn w-full bg-amber-600 hover:bg-amber-500" type="submit">登入系統</button>
-          <p id="loginMsg" class="text-sm text-rose-300"></p>
-        </form>
+  <div id="app">
+    <!-- ══════════════ LOGIN ══════════════ -->
+    <section id="loginView">
+      <div class="login-card">
+        <div class="login-logo">宋維</div>
+        <div class="ornament">◆ ◇ ◆</div>
+        <div class="login-sub">國文教務管理系統</div>
+        <div class="space-y-3">
+          <input id="email" type="email" class="input" placeholder="電子郵件" autocomplete="username" />
+          <input id="password" type="password" class="input" placeholder="密碼" autocomplete="current-password" />
+          <button id="loginBtn" class="btn btn-gold w-full mt-2" style="width:100%">登　入</button>
+          <p id="loginMsg" class="text-center" style="font-size:13px;color:#fca5a5;min-height:20px"></p>
+        </div>
       </div>
     </section>
 
+    <!-- ══════════════ DASHBOARD ══════════════ -->
     <section id="dashboardView" class="hidden">
-      <header class="border-b border-slate-700 sticky top-0 z-10 backdrop-blur bg-slate-950/80">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div><h2 class="font-semibold text-lg gold-title">Songwayc 教務中控台</h2><p id="userInfo" class="text-xs text-slate-300"></p></div>
+      <header class="sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between gap-3">
+          <div>
+            <div class="header-brand">Songwayc</div>
+            <p id="userInfo" class="mono" style="font-size:11px;color:var(--muted);margin-top:1px"></p>
+          </div>
           <div class="flex items-center gap-2">
-            <button id="dayBtn" class="btn bg-slate-900">日檢視</button>
-            <button id="weekBtn" class="btn bg-slate-700">週檢視</button>
-            <button id="logoutBtn" class="btn bg-rose-700">登出</button>
+            <button id="dayBtn" class="btn" style="background:var(--panel-2);font-size:13px;padding:8px 12px">日</button>
+            <button id="weekBtn" class="btn" style="background:var(--panel);font-size:13px;padding:8px 12px">週</button>
+            <button id="logoutBtn" class="btn" style="background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);font-size:13px;padding:8px 14px">登出</button>
           </div>
         </div>
       </header>
 
       <main class="max-w-7xl mx-auto p-4 grid lg:grid-cols-12 gap-4">
-        <aside class="lg:col-span-3 luxe-card rounded-xl p-4"><h3 class="font-semibold mb-2 gold-title">功能導覽</h3><ul id="navList" class="space-y-1 text-sm"></ul></aside>
+        <!-- SIDEBAR NAV -->
+        <aside class="lg:col-span-3">
+          <div class="luxe-card rounded-xl p-4 sticky top-20">
+            <div class="gold-title text-sm mb-3" style="letter-spacing:0.12em">功能導覽</div>
+            <hr class="gold-divider" style="margin:0 0 12px 0">
+            <ul id="navList" class="space-y-1"></ul>
+          </div>
+        </aside>
 
+        <!-- CONTENT -->
         <section class="lg:col-span-9 space-y-4">
-          <div class="luxe-card rounded-xl p-4">
-            <div class="flex justify-between items-center mb-3"><h3 class="font-semibold">排程行事曆（07:00-23:00）</h3><input id="targetDate" type="date" class="input max-w-44" /></div>
-            <div id="calendarHeader" class="grid text-xs text-slate-300 mb-2"></div>
-            <div id="calendarBody" class="calendar-grid border border-slate-700 rounded"></div>
+
+          <!-- 行事曆 -->
+          <div id="panel-calendar" class="section-panel luxe-card rounded-xl p-4">
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-semibold" style="color:var(--gold-light)">排程行事曆</h3>
+              <input id="targetDate" type="date" class="input" style="max-width:180px" />
+            </div>
+            <div id="calendarHeader" class="grid text-xs mb-2" style="color:var(--muted)"></div>
+            <div id="calendarBody" class="calendar-grid border rounded" style="border-color:var(--line)"></div>
           </div>
 
-          <div class="luxe-card rounded-xl p-4">
-            <h3 class="font-semibold mb-3 gold-title">新增排程</h3>
-            <form id="scheduleForm" class="grid md:grid-cols-2 gap-3 text-sm">
+          <!-- 新增排程 -->
+          <div id="panel-schedule" class="section-panel luxe-card rounded-xl p-4">
+            <h3 class="gold-title text-sm mb-4">新增排程</h3>
+            <form id="scheduleForm" class="grid md:grid-cols-2 gap-3">
               <input id="startAt" type="datetime-local" required class="input" />
               <input id="endAt" type="datetime-local" required class="input" />
               <input id="region" placeholder="地區" required class="input" />
               <input id="instituteName" placeholder="補習班名稱" required class="input" />
               <input id="grade" placeholder="年級" required class="input" />
               <input id="expectedStudents" type="number" min="1" placeholder="預估人數" required class="input" />
-              <select id="courseType" required><option value="">課程類型</option><option value="regular">常態排課</option><option value="single">單次代調課</option></select>
-              <button class="btn bg-emerald-700">儲存排程</button>
+              <select id="courseType" class="input" required>
+                <option value="">課程類型</option>
+                <option value="regular">常態排課</option>
+                <option value="single">單次代調課</option>
+              </select>
+              <button class="btn btn-gold" type="submit">儲存排程</button>
             </form>
-            <p id="scheduleMsg" class="text-sm mt-2"></p>
+            <p id="scheduleMsg" class="mt-2"></p>
           </div>
 
-          <div class="luxe-card rounded-xl p-4">
-            <h3 class="font-semibold mb-3 gold-title">打卡與班級日誌</h3>
-            <div class="grid md:grid-cols-2 gap-3 text-sm mb-3">
-              <select id="attendanceSchedule"></select>
-              <button id="reloadSchedules" class="btn bg-slate-700">重新載入今日排程</button>
+          <!-- 打卡 -->
+          <div id="panel-attendance" class="section-panel luxe-card rounded-xl p-4">
+            <h3 class="gold-title text-sm mb-4">打卡與班級日誌</h3>
+            <div class="grid md:grid-cols-2 gap-3 mb-4">
+              <select id="attendanceSchedule" class="input"></select>
+              <button id="reloadSchedules" class="btn" style="background:var(--panel-2)">重新載入今日排程</button>
             </div>
-            <form id="checkInForm" class="grid md:grid-cols-2 gap-3 text-sm mb-4">
+            <form id="checkInForm" class="grid md:grid-cols-2 gap-3 mb-4">
               <input id="checkInPhoto" type="file" accept="image/*" capture="environment" required class="input" />
-              <button class="btn bg-indigo-700">上課打卡（拍照）</button>
+              <button class="btn" style="background:#3730a3" type="submit">上課打卡（拍照）</button>
             </form>
-            <form id="checkOutForm" class="grid md:grid-cols-2 gap-3 text-sm">
+            <hr class="gold-divider">
+            <form id="checkOutForm" class="grid md:grid-cols-2 gap-3">
               <input id="checkOutPhoto" type="file" accept="image/*" capture="environment" required class="input" />
               <input id="teachingProgress" placeholder="本日教學進度" required class="input" />
               <input id="testScope" placeholder="測驗範圍" required class="input" />
               <input id="scoreRange" placeholder="成績區間" required class="input" />
               <input id="homework" placeholder="回家作業" required class="input" />
-              <input id="specialStudentNotes" placeholder="特殊學生狀況註記" required class="input" />
+              <input id="specialStudentNotes" placeholder="特殊學生狀況" required class="input" />
               <input id="examPaperCode" placeholder="考卷版本代碼" required class="input" />
-              <button class="btn bg-amber-700">下課打卡並提交日誌</button>
+              <button class="btn btn-gold" type="submit">下課打卡並提交日誌</button>
             </form>
-            <p id="attendanceMsg" class="text-sm mt-2"></p>
+            <p id="attendanceMsg" class="mt-2"></p>
           </div>
 
-          <div class="luxe-card rounded-xl p-4">
-            <h3 class="font-semibold mb-3 gold-title">補習班資料庫</h3>
-            <form id="instituteForm" class="grid md:grid-cols-2 gap-3 text-sm mb-4">
+          <!-- 補習班資料庫 -->
+          <div id="panel-institutes" class="section-panel luxe-card rounded-xl p-4">
+            <h3 class="gold-title text-sm mb-4">補習班資料庫</h3>
+            <form id="instituteForm" class="grid md:grid-cols-2 gap-3 mb-4">
               <input id="insName" placeholder="補習班名稱" required class="input" />
               <input id="insOwner" placeholder="負責人" required class="input" />
               <input id="insDirectorContact" placeholder="主任聯絡方式" required class="input" />
               <input id="insLine" placeholder="LINE 帳號" class="input" />
               <input id="insCopier" placeholder="影印機密碼" class="input" />
               <input id="insParking" placeholder="停車規定" class="input" />
-              <button class="btn bg-cyan-700">新增補習班</button>
+              <button class="btn btn-gold md:col-span-2" type="submit">新增補習班</button>
             </form>
             <div id="instituteCards" class="grid md:grid-cols-2 gap-3"></div>
           </div>
 
-          <div class="luxe-card rounded-xl p-4">
-            <h3 class="font-semibold mb-3 gold-title">班級內部留言板</h3>
-            <form id="messageForm" class="grid md:grid-cols-4 gap-3 text-sm mb-3">
+          <!-- 班級留言板 -->
+          <div id="panel-messages" class="section-panel luxe-card rounded-xl p-4">
+            <h3 class="gold-title text-sm mb-4">班級內部留言板</h3>
+            <form id="messageForm" class="grid md:grid-cols-4 gap-3 mb-4">
               <input id="msgClassId" placeholder="班級 ID" required class="input" />
               <input id="msgText" placeholder="留言內容" required class="input md:col-span-2" />
-              <button class="btn bg-fuchsia-700">送出留言</button>
+              <button class="btn" style="background:#7e22ce" type="submit">送出留言</button>
             </form>
-            <div class="grid md:grid-cols-3 gap-3 mb-3"><input id="msgViewClassId" placeholder="查詢班級 ID" class="input" /><button id="loadMessagesBtn" class="btn bg-slate-700">載入班級留言</button><div></div></div><div id="messageList" class="space-y-2 text-sm"></div>
+            <div class="grid md:grid-cols-3 gap-3 mb-3">
+              <input id="msgViewClassId" placeholder="查詢班級 ID" class="input" />
+              <button id="loadMessagesBtn" class="btn" style="background:var(--panel-2)">載入班級留言</button>
+            </div>
+            <div id="messageList" class="space-y-2"></div>
           </div>
 
-          <div class="luxe-card rounded-xl p-4"><h3 class="font-semibold mb-3 gold-title">薪資參數與月結算</h3><form id="salaryConfigForm" class="grid md:grid-cols-4 gap-3 text-sm mb-3"><input id="salaryTeacherId" placeholder="教師 UID" required class="input" /><input id="baseRate" type="number" placeholder="基本鐘點費" required class="input" /><input id="bonusThreshold" type="number" placeholder="人數門檻(如20)" required class="input" /><input id="bonusPerStudent" type="number" placeholder="每超過1人獎金" required class="input" /><input id="transportRegion" placeholder="車馬費地區 key" class="input" /><input id="transportAmount" type="number" placeholder="該地區補助" class="input" /><button class="btn bg-violet-700">儲存薪資參數</button></form><form id="salaryCalcForm" class="grid md:grid-cols-4 gap-3 text-sm"><input id="settleTeacherId" placeholder="教師 UID" required class="input" /><input id="settleMonth" type="month" required class="input" /><button class="btn bg-amber-700">計算月結算</button><div id="salaryResult" class="text-sm text-slate-200 md:col-span-2"></div></form></div><div class="luxe-card rounded-xl p-4"><h3 class="font-semibold mb-3 gold-title">待辦事項</h3>
-            <form id="todoForm" class="grid md:grid-cols-4 gap-3 text-sm mb-3">
+          <!-- 薪資 -->
+          <div id="panel-salary" class="section-panel luxe-card rounded-xl p-4">
+            <h3 class="gold-title text-sm mb-4">薪資參數與月結算</h3>
+            <form id="salaryConfigForm" class="grid md:grid-cols-4 gap-3 mb-4">
+              <input id="salaryTeacherId" placeholder="教師 UID" required class="input" />
+              <input id="baseRate" type="number" placeholder="基本鐘點費" required class="input" />
+              <input id="bonusThreshold" type="number" placeholder="人數門檻" required class="input" />
+              <input id="bonusPerStudent" type="number" placeholder="每超過1人獎金" required class="input" />
+              <input id="transportRegion" placeholder="車馬費地區 key" class="input" />
+              <input id="transportAmount" type="number" placeholder="該地區補助" class="input" />
+              <button class="btn btn-gold md:col-span-2" type="submit">儲存薪資參數</button>
+            </form>
+            <hr class="gold-divider">
+            <form id="salaryCalcForm" class="grid md:grid-cols-4 gap-3">
+              <input id="settleTeacherId" placeholder="教師 UID" required class="input" />
+              <input id="settleMonth" type="month" required class="input" />
+              <button class="btn btn-gold" type="submit">計算月結算</button>
+              <div id="salaryResult" class="mono text-sm" style="color:var(--muted);align-self:center"></div>
+            </form>
+          </div>
+
+          <!-- 待辦 -->
+          <div id="panel-todos" class="section-panel luxe-card rounded-xl p-4">
+            <h3 class="gold-title text-sm mb-4">待辦事項</h3>
+            <form id="todoForm" class="grid md:grid-cols-4 gap-3 mb-4">
               <input id="todoTitle" placeholder="任務標題" required class="input md:col-span-2" />
               <input id="todoAssignee" placeholder="指派教師 UID" required class="input" />
-              <button class="btn bg-teal-700">建立待辦</button>
+              <button class="btn" style="background:#0f766e" type="submit">建立待辦</button>
             </form>
             <ul id="todoList" class="space-y-2"></ul>
           </div>
+
+          <!-- ═══ 使用者管理（僅 Admin 可見）═══ -->
+          <div id="panel-users" class="section-panel luxe-card rounded-xl p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="gold-title text-sm">使用者管理</h3>
+              <button id="openAddUserBtn" class="btn btn-gold" style="font-size:13px;padding:8px 16px">＋ 新增帳號</button>
+            </div>
+
+            <div class="rounded-lg overflow-hidden" style="border:1px solid var(--line)">
+              <div class="user-row" style="background:rgba(201,168,76,0.05);color:var(--muted);font-size:11px;letter-spacing:0.08em">
+                <span>電子郵件</span>
+                <span>顯示名稱</span>
+                <span>角色</span>
+                <span>操作</span>
+              </div>
+              <div id="userList">
+                <div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">載入中…</div>
+              </div>
+            </div>
+            <p id="userMsg" class="mt-3"></p>
+          </div>
+
         </section>
       </main>
     </section>
+
+    <!-- ═══ 新增使用者 Modal ═══ -->
+    <div id="addUserModal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <div class="gold-title text-base mb-1">新增系統帳號</div>
+        <div class="ornament" style="font-size:14px;margin:6px 0 20px">◆ ◇ ◆</div>
+        <div class="space-y-3">
+          <input id="newUserName" placeholder="顯示名稱（如：宋維）" class="input" />
+          <input id="newUserEmail" type="email" placeholder="電子郵件" class="input" />
+          <input id="newUserPassword" type="password" placeholder="初始密碼" class="input" value="0000" />
+          <select id="newUserRole" class="input">
+            <option value="Admin">管理員 (Admin)</option>
+            <option value="Teacher">教師 (Teacher)</option>
+          </select>
+          <div class="flex gap-3 pt-2">
+            <button id="confirmAddUserBtn" class="btn btn-gold" style="flex:1">確認新增</button>
+            <button id="cancelAddUserBtn" class="btn" style="flex:1;background:var(--panel-2)">取消</button>
+          </div>
+          <p id="addUserMsg" style="text-align:center;min-height:18px"></p>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <script type="module" src="./js/app.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, Timestamp, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyDwu_7-Dt8S5g9jsyYcZI-5SQ-Wdc5pxqE", authDomain: "songwayc-2fba1.firebaseapp.com", projectId: "songwayc-2fba1", storageBucket: "songwayc-2fba1.firebasestorage.app", messagingSenderId: "560805644727", appId: "1:560805644727:web:3894efaff8479f1203c032", measurementId: "G-BYYK3KEZ72" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const $ = (id) => document.getElementById(id);
+
+    let currentUser = null;
+    let currentRole = "Teacher";
+    let currentMode = "day";
+    let todaySchedules = [];
+    let activePanel = null;
+
+    // ── NAV 定義 ──
+    const adminSections = [
+      { label: "排程行事曆", panel: "calendar" },
+      { label: "新增排程",   panel: "schedule" },
+      { label: "打卡紀錄",   panel: "attendance" },
+      { label: "補習班資料庫", panel: "institutes" },
+      { label: "班級留言板", panel: "messages" },
+      { label: "薪資管理",   panel: "salary" },
+      { label: "待辦事項",   panel: "todos" },
+      { label: "使用者管理", panel: "users" },
+    ];
+    const teacherSections = [
+      { label: "我的課表",   panel: "calendar" },
+      { label: "打卡 / 日誌", panel: "attendance" },
+      { label: "薪資試算",   panel: "salary" },
+      { label: "我的待辦",   panel: "todos" },
+      { label: "班級留言板", panel: "messages" },
+    ];
+
+    // ── LOGIN ──
+    $("loginBtn").addEventListener("click", async () => {
+      $("loginMsg").textContent = "";
+      try {
+        await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+      } catch (err) {
+        $("loginMsg").textContent = `登入失敗：${err.message}`;
+      }
+    });
+    $("email").addEventListener("keydown", e => { if (e.key === "Enter") $("password").focus(); });
+    $("password").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn").click(); });
+
+    $("logoutBtn").addEventListener("click", () => signOut(auth));
+    $("dayBtn").addEventListener("click", () => setMode("day"));
+    $("weekBtn").addEventListener("click", () => setMode("week"));
+    $("targetDate").addEventListener("change", () => renderCalendar());
+    $("reloadSchedules").addEventListener("click", async () => loadTodaySchedules());
+    $("loadMessagesBtn").addEventListener("click", async () => renderMessages($("msgViewClassId").value.trim()));
+
+    // ── ADD USER MODAL ──
+    $("openAddUserBtn").addEventListener("click", () => {
+      $("addUserModal").classList.remove("hidden");
+      $("addUserMsg").textContent = "";
+      $("newUserName").value = "";
+      $("newUserEmail").value = "";
+      $("newUserPassword").value = "0000";
+    });
+    $("cancelAddUserBtn").addEventListener("click", () => $("addUserModal").classList.add("hidden"));
+    $("addUserModal").addEventListener("click", (e) => { if (e.target === $("addUserModal")) $("addUserModal").classList.add("hidden"); });
+
+    $("confirmAddUserBtn").addEventListener("click", async () => {
+      const name = $("newUserName").value.trim();
+      const email = $("newUserEmail").value.trim();
+      const password = $("newUserPassword").value;
+      const role = $("newUserRole").value;
+
+      if (!email || !password) {
+        setMsg($("addUserMsg"), "請填寫 Email 和密碼", true); return;
+      }
+
+      $("confirmAddUserBtn").disabled = true;
+      $("confirmAddUserBtn").textContent = "建立中…";
+
+      try {
+        // 用 Firebase REST API 建立帳號（不會登出當前 Admin）
+        const apiKey = firebaseConfig.apiKey;
+        const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, returnSecureToken: true })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+
+        const uid = data.localId;
+
+        // 更新 displayName
+        if (name) {
+          await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idToken: data.idToken, displayName: name, returnSecureToken: false })
+          });
+        }
+
+        // 寫入 Firestore users 文件
+        await setDoc(doc(db, "users", uid), {
+          displayName: name, email, role,
+          isSuperAdmin: role === "Admin",
+          status: "active",
+          createdAt: Timestamp.now(), updatedAt: Timestamp.now()
+        });
+
+        setMsg($("addUserMsg"), `✓ 帳號 ${email} 建立成功`, false);
+        setTimeout(() => {
+          $("addUserModal").classList.add("hidden");
+          renderUserList();
+        }, 1200);
+      } catch (err) {
+        setMsg($("addUserMsg"), `建立失敗：${err.message}`, true);
+      } finally {
+        $("confirmAddUserBtn").disabled = false;
+        $("confirmAddUserBtn").textContent = "確認新增";
+      }
+    });
+
+    // ── FORMS ──
+    $("scheduleForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (currentRole !== "Admin") return setMsg($("scheduleMsg"), "僅 Admin 可新增排程", true);
+      const start = new Date($("startAt").value);
+      const end = new Date($("endAt").value);
+      if (isNaN(start) || isNaN(end) || end <= start) return setMsg($("scheduleMsg"), "時間格式錯誤", true);
+      try {
+        await addDoc(collection(db, "schedules"), {
+          date: fmtDate(start), startAt: Timestamp.fromDate(start), endAt: Timestamp.fromDate(end),
+          region: $("region").value.trim(), instituteName: $("instituteName").value.trim(), grade: $("grade").value.trim(),
+          expectedStudents: Number($("expectedStudents").value), courseType: $("courseType").value,
+          teacherId: currentUser.uid, createdBy: currentUser.uid, createdAt: Timestamp.now(), updatedAt: Timestamp.now(), status: "scheduled"
+        });
+        e.target.reset(); setMsg($("scheduleMsg"), "排程已儲存", false);
+        await renderCalendar(); await loadTodaySchedules();
+      } catch (err) { setMsg($("scheduleMsg"), `儲存失敗：${err.message}`, true); }
+    });
+
+    $("checkInForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const schedule = selectedSchedule();
+        if (!schedule) return setMsg($("attendanceMsg"), "請先選擇今日排程", true);
+        const file = $("checkInPhoto").files[0];
+        if (!file) return setMsg($("attendanceMsg"), "上課打卡必須上傳照片", true);
+        const photo = await uploadPhoto(file, `checkin/${currentUser.uid}/${Date.now()}_${file.name}`);
+        await setDoc(doc(db, "attendanceRecords", schedule.id), {
+          scheduleId: schedule.id, teacherId: currentUser.uid, instituteName: schedule.instituteName,
+          checkInAt: Timestamp.now(), checkInPhotoUrl: photo.url, checkInPhotoPath: photo.path,
+          status: "checked_in", updatedAt: Timestamp.now()
+        }, { merge: true });
+        setMsg($("attendanceMsg"), "上課打卡成功", false); e.target.reset();
+      } catch (err) { setMsg($("attendanceMsg"), `上課打卡失敗：${err.message}`, true); }
+    });
+
+    $("checkOutForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const schedule = selectedSchedule();
+        if (!schedule) return setMsg($("attendanceMsg"), "請先選擇今日排程", true);
+        const checkDoc = await getDoc(doc(db, "attendanceRecords", schedule.id));
+        if (!checkDoc.exists() || !checkDoc.data().checkInAt) return setMsg($("attendanceMsg"), "請先完成上課打卡", true);
+        const file = $("checkOutPhoto").files[0];
+        if (!file) return setMsg($("attendanceMsg"), "下課打卡必須上傳照片", true);
+        const photo = await uploadPhoto(file, `checkout/${currentUser.uid}/${Date.now()}_${file.name}`);
+        await setDoc(doc(db, "attendanceRecords", schedule.id), {
+          checkOutAt: Timestamp.now(), checkOutPhotoUrl: photo.url, checkOutPhotoPath: photo.path,
+          status: "checked_out", updatedAt: Timestamp.now()
+        }, { merge: true });
+        await addDoc(collection(db, "classLogs"), {
+          scheduleId: schedule.id, teacherId: currentUser.uid, instituteName: schedule.instituteName,
+          teachingProgress: $("teachingProgress").value.trim(), testScope: $("testScope").value.trim(),
+          scoreRange: $("scoreRange").value.trim(), homework: $("homework").value.trim(),
+          specialStudentNotes: $("specialStudentNotes").value.trim(),
+          examPaperUsed: { paperCode: $("examPaperCode").value.trim() }, createdAt: Timestamp.now(), updatedAt: Timestamp.now()
+        });
+        setMsg($("attendanceMsg"), "下課打卡與班級日誌已提交", false); e.target.reset();
+      } catch (err) { setMsg($("attendanceMsg"), `下課提交失敗：${err.message}`, true); }
+    });
+
+    $("instituteForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (currentRole !== "Admin") return;
+      await addDoc(collection(db, "institutes"), {
+        name: $("insName").value.trim(), ownerName: $("insOwner").value.trim(), directorContact: $("insDirectorContact").value.trim(),
+        lineAccount: $("insLine").value.trim(), copierPassword: $("insCopier").value.trim(), parkingRule: $("insParking").value.trim(),
+        createdAt: Timestamp.now(), updatedAt: Timestamp.now()
+      });
+      e.target.reset(); await renderInstitutes();
+    });
+
+    $("messageForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const classId = $("msgClassId").value.trim();
+      if (!classId) return;
+      await addDoc(collection(db, "classMessageBoards", classId, "messages"), {
+        classId, content: $("msgText").value.trim(), senderId: currentUser.uid, senderRole: currentRole, createdAt: Timestamp.now()
+      });
+      await setDoc(doc(db, "classMessageBoards", classId), { classId, lastMessageAt: Timestamp.now(), updatedAt: Timestamp.now() }, { merge: true });
+      e.target.reset(); $("msgViewClassId").value = classId; await renderMessages(classId);
+    });
+
+    $("todoForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (currentRole !== "Admin") return;
+      await addDoc(collection(db, "todos"), {
+        title: $("todoTitle").value.trim(), assignedTo: $("todoAssignee").value.trim(), assignedBy: currentUser.uid,
+        status: "open", createdAt: Timestamp.now(), updatedAt: Timestamp.now()
+      });
+      e.target.reset(); await renderTodos();
+    });
+
+    $("salaryConfigForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (currentRole !== "Admin") return;
+      const teacherId = $("salaryTeacherId").value.trim();
+      const regionKey = $("transportRegion").value.trim();
+      const cfgRef = doc(db, "salaryConfigs", teacherId);
+      const prev = await getDoc(cfgRef);
+      const transportByRegion = prev.exists() ? (prev.data().transportByRegion || {}) : {};
+      if (regionKey) transportByRegion[regionKey] = Number($("transportAmount").value || 0);
+      await setDoc(cfgRef, {
+        teacherId, baseHourlyRate: Number($("baseRate").value),
+        studentBonusRule: { threshold: Number($("bonusThreshold").value), bonusPerExtraStudent: Number($("bonusPerStudent").value) },
+        transportByRegion, updatedBy: currentUser.uid, updatedAt: Timestamp.now()
+      }, { merge: true });
+      $("salaryResult").textContent = "薪資參數已儲存";
+    });
+
+    $("salaryCalcForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const teacherId = $("settleTeacherId").value.trim();
+        const month = $("settleMonth").value;
+        const cfgSnap = await getDoc(doc(db, "salaryConfigs", teacherId));
+        if (!cfgSnap.exists()) return $("salaryResult").textContent = "找不到該教師薪資參數";
+        const cfg = cfgSnap.data();
+        const attSnap = await getDocs(query(collection(db, "attendanceRecords"), where("teacherId", "==", teacherId)));
+        let totalHours = 0, bonus = 0, transport = 0;
+        const sourceAttendanceIds = [], sourceScheduleIds = [];
+        for (const item of attSnap.docs) {
+          const a = item.data();
+          if (!a.checkInAt || !a.checkOutAt) continue;
+          const d = a.checkInAt.toDate();
+          const rowMonth = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+          if (rowMonth !== month) continue;
+          sourceAttendanceIds.push(item.id);
+          if (a.scheduleId) sourceScheduleIds.push(a.scheduleId);
+          totalHours += Math.max(0, (a.checkOutAt.toDate()-a.checkInAt.toDate())/3600000);
+          const sc = a.scheduleId ? await getDoc(doc(db, "schedules", a.scheduleId)) : null;
+          if (sc && sc.exists()) {
+            const sv = sc.data();
+            bonus += Math.max(0, Number(sv.expectedStudents||0)-Number(cfg.studentBonusRule?.threshold||0)) * Number(cfg.studentBonusRule?.bonusPerExtraStudent||0);
+            transport += Number(cfg.transportByRegion?.[sv.region]||0);
+          }
+        }
+        const basePay = totalHours * Number(cfg.baseHourlyRate||0);
+        const grandTotal = basePay + bonus + transport;
+        await addDoc(collection(db, "salarySettlements"), {
+          teacherId, month,
+          summary: { totalHours, basePay, studentBonus: bonus, transportAllowance: transport, adjustments: 0, grandTotal },
+          sourceAttendanceIds, sourceScheduleIds,
+          formulaSnapshot: { baseHourlyRate: Number(cfg.baseHourlyRate||0), threshold: Number(cfg.studentBonusRule?.threshold||0), bonusPerExtraStudent: Number(cfg.studentBonusRule?.bonusPerExtraStudent||0), transportByRegion: cfg.transportByRegion||{} },
+          status: "draft", createdAt: Timestamp.now(), updatedAt: Timestamp.now()
+        });
+        $("salaryResult").textContent = `${month} | ${totalHours.toFixed(1)}h | NT$ ${Math.round(grandTotal).toLocaleString()}`;
+      } catch (err) { $("salaryResult").textContent = `計算失敗：${err.message}`; }
+    });
+
+    // ── AUTH STATE ──
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      if (!user) {
+        $("loginView").classList.remove("hidden");
+        $("dashboardView").classList.add("hidden"); return;
+      }
+      currentRole = await ensureAndGetRole(user);
+      $("loginView").classList.add("hidden");
+      $("dashboardView").classList.remove("hidden");
+      $("userInfo").textContent = `${user.email}  ·  ${currentRole}`;
+      drawNav(currentRole);
+      $("targetDate").value = fmtDate(new Date());
+      setMode("day");
+      await renderCalendar();
+      await loadTodaySchedules();
+    });
+
+    // ── ROLE ──
+    async function ensureAndGetRole(user) {
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) return snap.data().role || "Teacher";
+      const email = (user.email || "").toLowerCase();
+      const isDefaultAdmin = email.includes("song") || email.includes("eric");
+      const role = isDefaultAdmin ? "Admin" : "Teacher";
+      await setDoc(userRef, {
+        displayName: user.displayName || "", email: user.email || "", role, isSuperAdmin: isDefaultAdmin,
+        status: "active", createdAt: Timestamp.now(), updatedAt: Timestamp.now()
+      }, { merge: true });
+      return role;
+    }
+
+    // ── NAV ──
+    function drawNav(role) {
+      const sections = role === "Admin" ? adminSections : teacherSections;
+      const navList = $("navList");
+      navList.innerHTML = "";
+      sections.forEach(({ label, panel }, i) => {
+        const li = document.createElement("li");
+        li.className = "nav-item";
+        li.textContent = label;
+        li.addEventListener("click", () => showPanel(panel, li));
+        navList.appendChild(li);
+        if (i === 0) { showPanel(panel, li); li.classList.add("active"); }
+      });
+    }
+
+    function showPanel(panelId, navEl) {
+      document.querySelectorAll(".section-panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      const panel = $("panel-" + panelId);
+      if (panel) panel.classList.add("active");
+      if (navEl) navEl.classList.add("active");
+
+      // lazy load
+      if (panelId === "institutes") renderInstitutes();
+      if (panelId === "todos") renderTodos();
+      if (panelId === "users" && currentRole === "Admin") renderUserList();
+    }
+
+    // ── USER LIST ──
+    async function renderUserList() {
+      const container = $("userList");
+      container.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">載入中…</div>`;
+      try {
+        const snap = await getDocs(collection(db, "users"));
+        if (snap.empty) { container.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">尚無使用者</div>`; return; }
+        container.innerHTML = "";
+        snap.forEach(d => {
+          const u = d.data();
+          const row = document.createElement("div");
+          row.className = "user-row";
+          row.innerHTML = `
+            <span style="color:var(--text);font-size:13px">${u.email || "-"}</span>
+            <span style="color:var(--muted);font-size:13px">${u.displayName || "-"}</span>
+            <span><span class="badge ${u.role === 'Admin' ? 'badge-admin' : 'badge-teacher'}">${u.role || "Teacher"}</span></span>
+            <button class="btn" style="background:var(--panel-2);font-size:12px;padding:6px 10px" onclick="toggleRole('${d.id}','${u.role}',this)">切換角色</button>
+          `;
+          container.appendChild(row);
+        });
+      } catch (err) {
+        container.innerHTML = `<div style="padding:20px;text-align:center;color:#fca5a5;font-size:13px">載入失敗：${err.message}</div>`;
+      }
+    }
+
+    window.toggleRole = async (uid, currentRoleVal, btn) => {
+      const newRole = currentRoleVal === "Admin" ? "Teacher" : "Admin";
+      btn.disabled = true; btn.textContent = "…";
+      await updateDoc(doc(db, "users", uid), { role: newRole, updatedAt: Timestamp.now() });
+      await renderUserList();
+    };
+
+    // ── INSTITUTES ──
+    async function renderInstitutes() {
+      const container = $("instituteCards");
+      const snap = await getDocs(query(collection(db, "institutes"), orderBy("createdAt", "desc")));
+      container.innerHTML = "";
+      snap.forEach(d => {
+        const i = d.data();
+        const card = document.createElement("div");
+        card.className = "ins-card";
+        card.innerHTML = `
+          <div style="color:var(--gold);font-weight:600;margin-bottom:6px">${i.name||"-"}</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.8">
+            負責人：${i.ownerName||"-"}<br>
+            主任聯絡：${i.directorContact||"-"}<br>
+            LINE：${i.lineAccount||"-"}<br>
+            影印機：${i.copierPassword||"-"}<br>
+            停車：${i.parkingRule||"-"}
+          </div>`;
+        container.appendChild(card);
+      });
+    }
+
+    // ── MESSAGES ──
+    async function renderMessages(classId) {
+      const container = $("messageList");
+      if (!classId) { container.innerHTML = `<div style="color:var(--muted);font-size:13px">請輸入班級 ID 後載入留言</div>`; return; }
+      const snap = await getDocs(query(collection(db, "classMessageBoards", classId, "messages"), orderBy("createdAt", "desc")));
+      container.innerHTML = "";
+      snap.forEach(d => {
+        const m = d.data();
+        const row = document.createElement("div");
+        row.style.cssText = "padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:rgba(8,12,20,0.6);font-size:13px;color:var(--muted)";
+        row.innerHTML = `<span style="color:var(--gold-light)">[${m.classId}]</span> <span style="color:var(--text)">${m.senderRole}：${m.content}</span>`;
+        container.appendChild(row);
+      });
+    }
+
+    // ── TODOS ──
+    async function renderTodos() {
+      const container = $("todoList");
+      const snap = await getDocs(query(collection(db, "todos"), orderBy("createdAt", "desc")));
+      container.innerHTML = "";
+      snap.forEach(d => {
+        const t = d.data();
+        if (currentRole !== "Admin" && t.assignedTo !== currentUser.uid) return;
+        const li = document.createElement("li");
+        li.style.cssText = "padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:rgba(8,12,20,0.6);display:flex;align-items:center;justify-content:space-between;gap:12px";
+        const label = document.createElement("span");
+        label.style.fontSize = "13px";
+        label.className = t.status === "done" ? "todo-done" : "";
+        label.style.color = t.status === "done" ? "var(--muted)" : "var(--text)";
+        label.textContent = `${t.title}  ·  指派：${t.assignedTo}`;
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.style.cssText = `background:${t.status==="done"?"var(--panel-2)":"#0f766e"};font-size:12px;padding:6px 12px;flex-shrink:0`;
+        btn.textContent = t.status === "done" ? "已完成" : "完成";
+        btn.disabled = t.status === "done";
+        btn.addEventListener("click", async () => {
+          await updateDoc(doc(db, "todos", d.id), { status: "done", doneAt: Timestamp.now(), updatedAt: Timestamp.now() });
+          await renderTodos();
+        });
+        li.appendChild(label); li.appendChild(btn); container.appendChild(li);
+      });
+    }
+
+    // ── SCHEDULES ──
+    async function loadTodaySchedules() {
+      const dateStr = fmtDate(new Date());
+      const events = await getEventsByDate(dateStr);
+      todaySchedules = currentRole === "Admin" ? events : events.filter(e => e.teacherId === currentUser.uid);
+      const select = $("attendanceSchedule");
+      select.innerHTML = '<option value="">請選擇今日排程</option>' + todaySchedules.map(s => `<option value="${s.id}">${hhmm(s.startAt.toDate())}-${hhmm(s.endAt.toDate())} ${s.instituteName} (${s.grade})</option>`).join("");
+    }
+
+    async function getEventsByDate(dateStr) {
+      const snap = await getDocs(query(collection(db, "schedules"), where("date","==",dateStr), orderBy("startAt","asc")));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    }
+
+    async function uploadPhoto(file, path) {
+      const storageRef = ref(storage, path);
+      await uploadBytes(storageRef, file, { contentType: file.type||"image/jpeg" });
+      const url = await getDownloadURL(storageRef);
+      return { path, url };
+    }
+
+    // ── CALENDAR ──
+    function setMode(mode) {
+      currentMode = mode;
+      $("dayBtn").style.background = mode === "day" ? "var(--gold-dim)" : "var(--panel-2)";
+      $("weekBtn").style.background = mode === "week" ? "var(--gold-dim)" : "var(--panel)";
+      renderCalendar();
+    }
+
+    async function renderCalendar() {
+      const base = new Date($("targetDate").value || fmtDate(new Date()));
+      const days = currentMode === "day" ? [base] : weekDays(base);
+      const header = $("calendarHeader");
+      const body = $("calendarBody");
+      header.style.gridTemplateColumns = `72px repeat(${days.length}, minmax(160px, 1fr))`;
+      header.innerHTML = `<div></div>${days.map(d=>`<div style="padding:4px 8px;font-size:12px">${d.toLocaleDateString("zh-TW",{month:"2-digit",day:"2-digit",weekday:"short"})}</div>`).join("")}`;
+      body.style.gridTemplateColumns = `72px repeat(${days.length}, minmax(160px, 1fr))`;
+      body.innerHTML = "";
+      const allByDate = await Promise.all(days.map(d => getEventsByDate(fmtDate(d))));
+      for (let hour = 7; hour <= 23; hour++) {
+        const tc = document.createElement("div"); tc.className = "time-cell"; tc.textContent = `${String(hour).padStart(2,"0")}:00`; body.appendChild(tc);
+        days.forEach((_,idx) => {
+          const slot = document.createElement("div"); slot.className = "slot-cell";
+          allByDate[idx].filter(ev => ev.startAt.toDate().getHours()===hour).forEach(ev => {
+            const pill = document.createElement("div"); pill.className = "event-pill";
+            pill.textContent = `${hhmm(ev.startAt.toDate())}-${hhmm(ev.endAt.toDate())} ${ev.instituteName} (${ev.grade})`;
+            slot.appendChild(pill);
+          });
+          body.appendChild(slot);
+        });
+      }
+    }
+
+    // ── UTILS ──
+    function selectedSchedule() { return todaySchedules.find(s => s.id === $("attendanceSchedule").value); }
+    function setMsg(el, text, isError) { el.className = isError ? "msg-err" : "msg-ok"; el.textContent = text; }
+    function weekDays(date) { const day = date.getDay(); const off = day===0?-6:1-day; const mon = new Date(date); mon.setDate(date.getDate()+off); return Array.from({length:7},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return d; }); }
+    function fmtDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+    function hhmm(d) { return `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; }
+  </script>
 </body>
 </html>
-
