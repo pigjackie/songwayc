@@ -103,11 +103,10 @@
               <input id="msgText" placeholder="留言內容" required class="input md:col-span-2" />
               <button class="btn bg-fuchsia-700">送出留言</button>
             </form>
-            <div id="messageList" class="space-y-2 text-sm"></div>
+            <div class="grid md:grid-cols-3 gap-3 mb-3"><input id="msgViewClassId" placeholder="查詢班級 ID" class="input" /><button id="loadMessagesBtn" class="btn bg-slate-700">載入班級留言</button><div></div></div><div id="messageList" class="space-y-2 text-sm"></div>
           </div>
 
-          <div class="luxe-card rounded-xl p-4">
-            <h3 class="font-semibold mb-3 gold-title">待辦事項</h3>
+          <div class="luxe-card rounded-xl p-4"><h3 class="font-semibold mb-3 gold-title">薪資參數與月結算</h3><form id="salaryConfigForm" class="grid md:grid-cols-4 gap-3 text-sm mb-3"><input id="salaryTeacherId" placeholder="教師 UID" required class="input" /><input id="baseRate" type="number" placeholder="基本鐘點費" required class="input" /><input id="bonusThreshold" type="number" placeholder="人數門檻(如20)" required class="input" /><input id="bonusPerStudent" type="number" placeholder="每超過1人獎金" required class="input" /><input id="transportRegion" placeholder="車馬費地區 key" class="input" /><input id="transportAmount" type="number" placeholder="該地區補助" class="input" /><button class="btn bg-violet-700">儲存薪資參數</button></form><form id="salaryCalcForm" class="grid md:grid-cols-4 gap-3 text-sm"><input id="settleTeacherId" placeholder="教師 UID" required class="input" /><input id="settleMonth" type="month" required class="input" /><button class="btn bg-amber-700">計算月結算</button><div id="salaryResult" class="text-sm text-slate-200 md:col-span-2"></div></form></div><div class="luxe-card rounded-xl p-4"><h3 class="font-semibold mb-3 gold-title">待辦事項</h3>
             <form id="todoForm" class="grid md:grid-cols-4 gap-3 text-sm mb-3">
               <input id="todoTitle" placeholder="任務標題" required class="input md:col-span-2" />
               <input id="todoAssignee" placeholder="指派教師 UID" required class="input" />
@@ -122,3 +121,4 @@
   <script type="module" src="./js/app.js"></script>
 </body>
 </html>
+
