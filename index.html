@@ -277,7 +277,7 @@
         <div class="ornament">◆ ◇ ◆</div>
         <div class="login-sub">國文教務管理系統</div>
         <div class="space-y-3">
-          <input id="email" type="email" class="input" placeholder="電子郵件" autocomplete="username" />
+          <input id="accountInput" class="input" placeholder="帳號（如：宋維、eric）" autocomplete="username" />
           <input id="password" type="password" class="input" placeholder="密碼" autocomplete="current-password" />
           <button id="loginBtn" class="btn btn-gold w-full mt-2" style="width:100%">登　入</button>
           <p id="loginMsg" class="text-center" style="font-size:13px;color:#fca5a5;min-height:20px"></p>
@@ -518,16 +518,48 @@
       { label: "班級留言板", panel: "messages" },
     ];
 
+    // ── 帳號對照表（帳號代碼 → email）──
+    // Admin 在「使用者管理」新增帳號後，記得也在這裡加一行
+    const ACCOUNT_MAP = {
+      "宋維":   "songwei@songwayc.com",
+      "songwei": "songwei@songwayc.com",
+      "宋洋":   "songyang@songwayc.com",
+      "songyang": "songyang@songwayc.com",
+      "宋彥":   "songyan@songwayc.com",
+      "songyan": "songyan@songwayc.com",
+      "eric":   "eric@songwayc.com",
+      "Eric":   "eric@songwayc.com",
+      "ERIC":   "eric@songwayc.com",
+    };
+
+    function resolveEmail(input) {
+      const trimmed = input.trim();
+      // 如果本身就是 email 格式，直接用
+      if (trimmed.includes("@")) return trimmed;
+      // 查對照表（不分大小寫比對英文）
+      const lower = trimmed.toLowerCase();
+      for (const [key, val] of Object.entries(ACCOUNT_MAP)) {
+        if (key === trimmed || key.toLowerCase() === lower) return val;
+      }
+      return null;
+    }
+
     // ── LOGIN ──
     $("loginBtn").addEventListener("click", async () => {
       $("loginMsg").textContent = "";
+      const account = $("accountInput").value.trim();
+      const email = resolveEmail(account);
+      if (!email) {
+        $("loginMsg").textContent = "找不到此帳號，請確認輸入正確";
+        return;
+      }
       try {
-        await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+        await signInWithEmailAndPassword(auth, email, $("password").value);
       } catch (err) {
-        $("loginMsg").textContent = `登入失敗：${err.message}`;
+        $("loginMsg").textContent = `登入失敗：密碼錯誤或帳號不存在`;
       }
     });
-    $("email").addEventListener("keydown", e => { if (e.key === "Enter") $("password").focus(); });
+    $("accountInput").addEventListener("keydown", e => { if (e.key === "Enter") $("password").focus(); });
     $("password").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn").click(); });
 
     $("logoutBtn").addEventListener("click", () => signOut(auth));
