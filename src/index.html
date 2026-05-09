@@ -7,81 +7,118 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
-<body class="bg-slate-100 text-slate-900">
+<body>
   <div id="app" class="min-h-screen">
     <section id="loginView" class="min-h-screen flex items-center justify-center p-6">
-      <div class="w-full max-w-md bg-white shadow-xl rounded-2xl p-6">
-        <h1 class="text-2xl font-bold mb-1">宋維國文管理系統</h1>
-        <p class="text-sm text-slate-500 mb-6">請使用 Email / Password 登入</p>
+      <div class="w-full max-w-md luxe-card rounded-2xl p-6">
+        <h1 class="text-2xl font-bold gold-title mb-1">宋維國文管理系統</h1>
+        <p class="text-sm text-slate-300 mb-6">教師排程、打卡薪資、教務行政一體化平台</p>
         <form id="loginForm" class="space-y-4">
-          <div><label class="block text-sm mb-1">Email</label><input id="email" type="email" required class="w-full border rounded-lg px-3 py-2" /></div>
-          <div><label class="block text-sm mb-1">Password</label><input id="password" type="password" required class="w-full border rounded-lg px-3 py-2" /></div>
-          <button class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2" type="submit">登入</button>
-          <p id="loginMsg" class="text-sm text-rose-600"></p>
+          <input id="email" type="email" required class="input" placeholder="Email" />
+          <input id="password" type="password" required class="input" placeholder="Password" />
+          <button class="btn w-full bg-amber-600 hover:bg-amber-500" type="submit">登入系統</button>
+          <p id="loginMsg" class="text-sm text-rose-300"></p>
         </form>
       </div>
     </section>
 
     <section id="dashboardView" class="hidden">
-      <header class="bg-white border-b sticky top-0 z-10">
+      <header class="border-b border-slate-700 sticky top-0 z-10 backdrop-blur bg-slate-950/80">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div><h2 class="font-semibold text-lg">宋維國文管理系統</h2><p id="userInfo" class="text-xs text-slate-500"></p></div>
-          <div class="flex items-center gap-2"><button id="dayBtn" class="px-3 py-1.5 rounded bg-slate-900 text-white text-sm">日檢視</button><button id="weekBtn" class="px-3 py-1.5 rounded bg-slate-200 text-sm">週檢視</button><button id="logoutBtn" class="px-3 py-1.5 rounded bg-rose-600 text-white text-sm">登出</button></div>
+          <div><h2 class="font-semibold text-lg gold-title">Songwayc 教務中控台</h2><p id="userInfo" class="text-xs text-slate-300"></p></div>
+          <div class="flex items-center gap-2">
+            <button id="dayBtn" class="btn bg-slate-900">日檢視</button>
+            <button id="weekBtn" class="btn bg-slate-700">週檢視</button>
+            <button id="logoutBtn" class="btn bg-rose-700">登出</button>
+          </div>
         </div>
       </header>
 
       <main class="max-w-7xl mx-auto p-4 grid lg:grid-cols-12 gap-4">
-        <aside class="lg:col-span-3 bg-white rounded-xl border p-4"><h3 class="font-semibold mb-2">功能導覽</h3><ul id="navList" class="space-y-1 text-sm"></ul></aside>
+        <aside class="lg:col-span-3 luxe-card rounded-xl p-4"><h3 class="font-semibold mb-2 gold-title">功能導覽</h3><ul id="navList" class="space-y-1 text-sm"></ul></aside>
 
         <section class="lg:col-span-9 space-y-4">
-          <div class="bg-white rounded-xl border p-4">
-            <div class="flex justify-between items-center mb-3"><h3 class="font-semibold">排程行事曆（07:00-23:00）</h3><input id="targetDate" type="date" class="border rounded px-2 py-1 text-sm" /></div>
-            <div id="calendarHeader" class="grid text-xs text-slate-500 mb-2"></div>
-            <div id="calendarBody" class="calendar-grid border rounded"></div>
+          <div class="luxe-card rounded-xl p-4">
+            <div class="flex justify-between items-center mb-3"><h3 class="font-semibold">排程行事曆（07:00-23:00）</h3><input id="targetDate" type="date" class="input max-w-44" /></div>
+            <div id="calendarHeader" class="grid text-xs text-slate-300 mb-2"></div>
+            <div id="calendarBody" class="calendar-grid border border-slate-700 rounded"></div>
           </div>
 
-          <div class="bg-white rounded-xl border p-4">
-            <h3 class="font-semibold mb-3">新增排程</h3>
+          <div class="luxe-card rounded-xl p-4">
+            <h3 class="font-semibold mb-3 gold-title">新增排程</h3>
             <form id="scheduleForm" class="grid md:grid-cols-2 gap-3 text-sm">
-              <input id="startAt" type="datetime-local" required class="border rounded px-2 py-2" />
-              <input id="endAt" type="datetime-local" required class="border rounded px-2 py-2" />
-              <input id="region" placeholder="地區" required class="border rounded px-2 py-2" />
-              <input id="instituteName" placeholder="補習班名稱" required class="border rounded px-2 py-2" />
-              <input id="grade" placeholder="年級" required class="border rounded px-2 py-2" />
-              <input id="expectedStudents" type="number" min="1" placeholder="預估人數" required class="border rounded px-2 py-2" />
-              <select id="courseType" required class="border rounded px-2 py-2"><option value="">課程類型</option><option value="regular">常態排課</option><option value="single">單次代調課</option></select>
-              <button class="bg-emerald-600 text-white rounded px-3 py-2">儲存排程</button>
+              <input id="startAt" type="datetime-local" required class="input" />
+              <input id="endAt" type="datetime-local" required class="input" />
+              <input id="region" placeholder="地區" required class="input" />
+              <input id="instituteName" placeholder="補習班名稱" required class="input" />
+              <input id="grade" placeholder="年級" required class="input" />
+              <input id="expectedStudents" type="number" min="1" placeholder="預估人數" required class="input" />
+              <select id="courseType" required><option value="">課程類型</option><option value="regular">常態排課</option><option value="single">單次代調課</option></select>
+              <button class="btn bg-emerald-700">儲存排程</button>
             </form>
             <p id="scheduleMsg" class="text-sm mt-2"></p>
           </div>
 
-          <div class="bg-white rounded-xl border p-4">
-            <h3 class="font-semibold mb-3">打卡與班級日誌</h3>
+          <div class="luxe-card rounded-xl p-4">
+            <h3 class="font-semibold mb-3 gold-title">打卡與班級日誌</h3>
             <div class="grid md:grid-cols-2 gap-3 text-sm mb-3">
               <select id="attendanceSchedule"></select>
-              <button id="reloadSchedules" class="bg-slate-700 text-white rounded px-3 py-2">重新載入今日排程</button>
+              <button id="reloadSchedules" class="btn bg-slate-700">重新載入今日排程</button>
             </div>
             <form id="checkInForm" class="grid md:grid-cols-2 gap-3 text-sm mb-4">
-              <input id="checkInPhoto" type="file" accept="image/*" capture="environment" required class="border rounded px-2 py-2" />
-              <button class="bg-indigo-600 text-white rounded px-3 py-2">上課打卡（拍照）</button>
+              <input id="checkInPhoto" type="file" accept="image/*" capture="environment" required class="input" />
+              <button class="btn bg-indigo-700">上課打卡（拍照）</button>
             </form>
             <form id="checkOutForm" class="grid md:grid-cols-2 gap-3 text-sm">
-              <input id="checkOutPhoto" type="file" accept="image/*" capture="environment" required class="border rounded px-2 py-2" />
-              <input id="teachingProgress" placeholder="本日教學進度" required class="border rounded px-2 py-2" />
-              <input id="testScope" placeholder="測驗範圍" required class="border rounded px-2 py-2" />
-              <input id="scoreRange" placeholder="成績區間" required class="border rounded px-2 py-2" />
-              <input id="homework" placeholder="回家作業" required class="border rounded px-2 py-2" />
-              <input id="specialStudentNotes" placeholder="特殊學生狀況註記" required class="border rounded px-2 py-2" />
-              <input id="examPaperCode" placeholder="考卷版本代碼" required class="border rounded px-2 py-2" />
-              <button class="bg-amber-600 text-white rounded px-3 py-2">下課打卡並提交日誌</button>
+              <input id="checkOutPhoto" type="file" accept="image/*" capture="environment" required class="input" />
+              <input id="teachingProgress" placeholder="本日教學進度" required class="input" />
+              <input id="testScope" placeholder="測驗範圍" required class="input" />
+              <input id="scoreRange" placeholder="成績區間" required class="input" />
+              <input id="homework" placeholder="回家作業" required class="input" />
+              <input id="specialStudentNotes" placeholder="特殊學生狀況註記" required class="input" />
+              <input id="examPaperCode" placeholder="考卷版本代碼" required class="input" />
+              <button class="btn bg-amber-700">下課打卡並提交日誌</button>
             </form>
             <p id="attendanceMsg" class="text-sm mt-2"></p>
+          </div>
+
+          <div class="luxe-card rounded-xl p-4">
+            <h3 class="font-semibold mb-3 gold-title">補習班資料庫</h3>
+            <form id="instituteForm" class="grid md:grid-cols-2 gap-3 text-sm mb-4">
+              <input id="insName" placeholder="補習班名稱" required class="input" />
+              <input id="insOwner" placeholder="負責人" required class="input" />
+              <input id="insDirectorContact" placeholder="主任聯絡方式" required class="input" />
+              <input id="insLine" placeholder="LINE 帳號" class="input" />
+              <input id="insCopier" placeholder="影印機密碼" class="input" />
+              <input id="insParking" placeholder="停車規定" class="input" />
+              <button class="btn bg-cyan-700">新增補習班</button>
+            </form>
+            <div id="instituteCards" class="grid md:grid-cols-2 gap-3"></div>
+          </div>
+
+          <div class="luxe-card rounded-xl p-4">
+            <h3 class="font-semibold mb-3 gold-title">班級內部留言板</h3>
+            <form id="messageForm" class="grid md:grid-cols-4 gap-3 text-sm mb-3">
+              <input id="msgClassId" placeholder="班級 ID" required class="input" />
+              <input id="msgText" placeholder="留言內容" required class="input md:col-span-2" />
+              <button class="btn bg-fuchsia-700">送出留言</button>
+            </form>
+            <div id="messageList" class="space-y-2 text-sm"></div>
+          </div>
+
+          <div class="luxe-card rounded-xl p-4">
+            <h3 class="font-semibold mb-3 gold-title">待辦事項</h3>
+            <form id="todoForm" class="grid md:grid-cols-4 gap-3 text-sm mb-3">
+              <input id="todoTitle" placeholder="任務標題" required class="input md:col-span-2" />
+              <input id="todoAssignee" placeholder="指派教師 UID" required class="input" />
+              <button class="btn bg-teal-700">建立待辦</button>
+            </form>
+            <ul id="todoList" class="space-y-2"></ul>
           </div>
         </section>
       </main>
     </section>
   </div>
-
   <script type="module" src="./js/app.js"></script>
 </body>
 </html>

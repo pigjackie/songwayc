@@ -25,6 +25,24 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    match /institutes/{id} {
+      allow read: if isAuthed();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /classMessages/{id} {
+      allow read: if isAuthed();
+      allow create: if isAuthed();
+      allow update, delete: if isAdmin();
+    }
+
+    match /todos/{id} {
+      allow read: if isAuthed();
+      allow create: if isAdmin();
+      allow update: if isAuthed();
+      allow delete: if isAdmin();
+    }
+
     match /{document=**} { allow read, write: if false; }
   }
 }

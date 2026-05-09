@@ -1,28 +1,33 @@
-﻿.calendar-grid {
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  max-height: 560px;
-  overflow: auto;
+﻿:root {
+  --bg: #0b1020;
+  --panel: #121a31;
+  --panel-2: #1a2545;
+  --line: #2b3760;
+  --gold: #d4af37;
+  --text: #f8fafc;
+  --muted: #94a3b8;
 }
-.time-cell {
-  border-right: 1px solid #e2e8f0;
-  border-top: 1px solid #e2e8f0;
-  font-size: 12px;
-  color: #64748b;
-  padding: 8px;
-  background: #f8fafc;
+body {
+  background: radial-gradient(circle at top right, #1b2a54 0, #0b1020 40%, #090d18 100%);
+  color: var(--text);
 }
-.slot-cell {
-  border-top: 1px solid #e2e8f0;
-  padding: 6px 10px;
-  min-height: 40px;
-  background: #fff;
+.luxe-card {
+  background: linear-gradient(160deg, rgba(26, 37, 69, 0.95), rgba(18, 26, 49, 0.95));
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 50px rgba(0, 0, 0, 0.35);
 }
-.event-pill {
-  background: #dbeafe;
-  border: 1px solid #93c5fd;
+.gold-title { color: var(--gold); letter-spacing: 0.04em; }
+.calendar-grid { display: grid; grid-template-columns: 72px 1fr; max-height: 560px; overflow: auto; }
+.time-cell { border-right: 1px solid #334155; border-top: 1px solid #334155; font-size: 12px; color: #cbd5e1; padding: 8px; background: #0f172a; }
+.slot-cell { border-top: 1px solid #334155; padding: 6px 10px; min-height: 40px; background: #0b1224; }
+.event-pill { background: #1d4ed8; border: 1px solid #60a5fa; border-radius: 10px; font-size: 12px; padding: 4px 8px; margin-bottom: 4px; }
+.input, select, textarea {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #e2e8f0;
   border-radius: 10px;
-  font-size: 12px;
-  padding: 4px 8px;
-  margin-bottom: 4px;
+  padding: 10px;
 }
+.btn { border-radius: 10px; padding: 10px 14px; color: white; font-size: 14px; }
+.todo-done { text-decoration: line-through; opacity: 0.7; }
