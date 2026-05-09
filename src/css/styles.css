@@ -1,0 +1,28 @@
+﻿.calendar-grid {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  max-height: 560px;
+  overflow: auto;
+}
+.time-cell {
+  border-right: 1px solid #e2e8f0;
+  border-top: 1px solid #e2e8f0;
+  font-size: 12px;
+  color: #64748b;
+  padding: 8px;
+  background: #f8fafc;
+}
+.slot-cell {
+  border-top: 1px solid #e2e8f0;
+  padding: 6px 10px;
+  min-height: 40px;
+  background: #fff;
+}
+.event-pill {
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  border-radius: 10px;
+  font-size: 12px;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+}
