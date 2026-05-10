@@ -201,26 +201,62 @@
     <!-- ═══ 課程管理 ═══ -->
     <div id="panel-coursemgr" class="section-panel luxe-card rounded-xl p-4">
       <h3 class="gold-title text-sm mb-4">課程管理</h3>
-      <div class="flex flex-wrap gap-3 mb-4">
-        <select id="cmFilterTeacher" class="input" style="width:150px;padding:7px 10px;font-size:13px"><option value="all">全部老師</option></select>
-        <select id="cmFilterPeriod" class="input" style="width:150px;padding:7px 10px;font-size:13px">
+
+      <!-- 篩選列 -->
+      <div class="flex flex-wrap gap-2 mb-3">
+        <select id="cmFilterTeacher" class="input" style="width:140px;padding:7px 10px;font-size:13px"><option value="all">全部老師</option></select>
+        <select id="cmFilterPeriod" class="input" style="width:140px;padding:7px 10px;font-size:13px">
           <option value="all">全部學期</option>
-          <option value="114上學期">114 上學期</option>
-          <option value="114寒假">114 寒假</option>
-          <option value="114下學期">114 下學期</option>
-          <option value="114暑假">114 暑假</option>
+          <option value="114上學期">114 上學期</option><option value="114寒假">114 寒假</option>
+          <option value="114下學期">114 下學期</option><option value="114暑假">114 暑假</option>
         </select>
-        <select id="cmFilterStatus" class="input" style="width:130px;padding:7px 10px;font-size:13px">
+        <input id="cmFilterInstitute" placeholder="補習班名稱篩選" class="input" style="width:160px;padding:7px 10px;font-size:13px"/>
+        <select id="cmFilterStatus" class="input" style="width:120px;padding:7px 10px;font-size:13px">
           <option value="all">全部狀態</option>
-          <option value="scheduled">待上課</option>
-          <option value="checkedin">已到班</option>
-          <option value="absent">請假</option>
-          <option value="rescheduled">調課</option>
-          <option value="cancelled">停課</option>
+          <option value="scheduled">待上課</option><option value="checkedin">已到班</option>
+          <option value="absent">請假</option><option value="rescheduled">調課</option><option value="cancelled">停課</option>
         </select>
-        <button id="cmLoadBtn" class="btn btn-gold" style="padding:7px 16px;font-size:13px">載入課程</button>
+        <button id="cmLoadBtn" class="btn btn-gold" style="padding:7px 14px;font-size:13px">載入課程</button>
       </div>
-      <div id="cmSummary" class="text-xs mb-3" style="color:var(--muted)"></div>
+
+      <!-- 批次操作列 -->
+      <div id="batchBar" class="hidden mb-3 p-3 rounded-lg" style="background:rgba(201,168,76,.06);border:1px solid var(--gold-dim)">
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+          <label class="flex items-center gap-2 cursor-pointer text-sm" style="color:var(--gold-light)">
+            <input type="checkbox" id="selectAll" style="accent-color:var(--gold);width:16px;height:16px">
+            全選（<span id="selectedCount">0</span> 筆已選）
+          </label>
+          <button id="batchEditBtn" class="btn btn-gold" style="padding:6px 14px;font-size:12px">批次編輯選取項目</button>
+          <button id="batchDeleteBtn" class="btn btn-red" style="padding:6px 14px;font-size:12px">批次刪除選取項目</button>
+        </div>
+        <!-- 條件批次修改 -->
+        <details class="mt-1">
+          <summary class="text-xs cursor-pointer" style="color:var(--muted)">▶ 條件批次修改（依篩選結果全部改）</summary>
+          <div class="grid md:grid-cols-3 gap-2 mt-2">
+            <div><label class="text-xs" style="color:var(--muted)">老師鐘點費/堂</label><input id="batchTeacherFee" type="number" placeholder="不改留空" class="input mt-1" style="padding:7px 10px;font-size:13px"/></div>
+            <div><label class="text-xs" style="color:var(--muted)">補習班收費/堂</label><input id="batchRevenue" type="number" placeholder="不改留空" class="input mt-1" style="padding:7px 10px;font-size:13px"/></div>
+            <div><label class="text-xs" style="color:var(--muted)">指派老師</label><select id="batchTeacher" class="input mt-1" style="padding:7px 10px;font-size:13px"><option value="">不更改</option></select></div>
+            <div><label class="text-xs" style="color:var(--muted)">狀態</label>
+              <select id="batchStatus" class="input mt-1" style="padding:7px 10px;font-size:13px">
+                <option value="">不更改</option><option value="scheduled">待上課</option><option value="checkedin">已到班</option>
+                <option value="absent">請假</option><option value="rescheduled">調課</option><option value="cancelled">停課</option>
+              </select>
+            </div>
+            <div><label class="text-xs" style="color:var(--muted)">學期</label>
+              <select id="batchPeriod" class="input mt-1" style="padding:7px 10px;font-size:13px">
+                <option value="">不更改</option><option value="114上學期">114 上學期</option><option value="114寒假">114 寒假</option>
+                <option value="114下學期">114 下學期</option><option value="114暑假">114 暑假</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button id="condBatchBtn" class="btn btn-gold w-full" style="padding:7px 14px;font-size:12px">套用至全部篩選結果</button>
+            </div>
+          </div>
+          <p id="condBatchMsg" class="mt-2 text-xs text-center"></p>
+        </details>
+      </div>
+
+      <div id="cmSummary" class="text-xs mb-2" style="color:var(--muted)"></div>
       <div id="cmList" class="space-y-2"></div>
     </div>
 
@@ -800,47 +836,56 @@ async function renderRosters(){
 window.deleteRoster=async(col,id)=>{if(confirm("確認刪除？"))await deleteDoc(doc(db,col,id));renderRosters();};
 
 // ── 課程管理 ──
+let cmRows=[]; // 目前載入的課程
+let selectedIds=new Set();
+
 $("cmLoadBtn").onclick=()=>renderCourseMgr();
 
 async function renderCourseMgr(){
-  // 填老師下拉
+  // 填篩選老師下拉
   const ts=$("cmFilterTeacher");
-  if(ts.options.length<=1){
-    allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;ts.appendChild(o);});
-  }
+  if(ts.options.length<=1){allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;ts.appendChild(o);});}
+  // 填批次老師下拉
+  const bt=$("batchTeacher");
+  bt.innerHTML='<option value="">不更改</option>';
+  allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;bt.appendChild(o);});
 
   const filterT=$("cmFilterTeacher").value;
   const filterP=$("cmFilterPeriod").value;
   const filterS=$("cmFilterStatus").value;
+  const filterI=$("cmFilterInstitute").value.trim().toLowerCase();
 
   const c=$("cmList"); c.innerHTML=`<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">載入中…</div>`;
+  selectedIds=new Set(); updateSelectedCount();
 
-  let q=query(collection(db,"schedules"),orderBy("startAt","desc"));
-  const snap=await getDocs(q);
-
+  const snap=await getDocs(query(collection(db,"schedules"),orderBy("startAt","desc")));
   const statusLabel={scheduled:"待上課",checkedin:"已到班",absent:"請假",rescheduled:"調課",cancelled:"停課"};
   const statusColor={scheduled:"var(--gold)",checkedin:"#6ee7b7",absent:"#fca5a5",rescheduled:"#a5b4fc",cancelled:"#9ca3af"};
 
-  let rows=[], total=0;
+  cmRows=[];
   snap.forEach(d=>{
     const ev={id:d.id,...d.data()};
     if(filterT!=="all"&&ev.teacherId!==filterT) return;
     if(filterP!=="all"&&ev.academicPeriod!==filterP) return;
     if(filterS!=="all"&&(ev.status||"scheduled")!==filterS) return;
-    rows.push(ev); total++;
+    if(filterI&&!(ev.instituteName||"").toLowerCase().includes(filterI)) return;
+    cmRows.push(ev);
   });
 
-  $("cmSummary").textContent=`共 ${total} 筆課程`;
+  $("cmSummary").textContent=`共 ${cmRows.length} 筆課程`;
+  $("batchBar").classList.toggle("hidden", cmRows.length===0);
   c.innerHTML="";
 
-  if(rows.length===0){c.innerHTML=`<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">無符合條件的課程</div>`;return;}
+  if(cmRows.length===0){c.innerHTML=`<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">無符合條件的課程</div>`;return;}
 
-  rows.forEach(ev=>{
+  cmRows.forEach(ev=>{
     const st=ev.status||"scheduled";
     const row=document.createElement("div");
     row.style.cssText="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:rgba(8,12,20,.6);flex-wrap:wrap;";
+    row.dataset.id=ev.id;
     row.innerHTML=`
-      <div style="flex:1;min-width:200px">
+      <input type="checkbox" class="cm-check" data-id="${ev.id}" style="accent-color:var(--gold);width:16px;height:16px;flex-shrink:0">
+      <div style="flex:1;min-width:180px">
         <div style="font-weight:700;color:var(--gold-light);font-size:13px">${ev.instituteName||"-"}</div>
         <div style="font-size:11px;color:var(--muted);margin-top:2px">${ev.date} ${hhmm(ev.startAt.toDate())}–${hhmm(ev.endAt.toDate())} ｜ ${ev.grade||"-"} ｜ 👤${ev.teacherName||"-"}</div>
         <div style="font-size:11px;color:var(--muted)">${ev.academicPeriod||""} ｜ 鐘點：NT$${ev.teacherFeePerClass||0} ｜ 收費：NT$${ev.instituteRevenuePerClass||0}</div>
@@ -851,20 +896,93 @@ async function renderCourseMgr(){
     `;
     c.appendChild(row);
   });
+
+  // checkbox 事件
+  document.querySelectorAll(".cm-check").forEach(cb=>{
+    cb.onchange=()=>{
+      if(cb.checked) selectedIds.add(cb.dataset.id);
+      else selectedIds.delete(cb.dataset.id);
+      updateSelectedCount();
+    };
+  });
 }
+
+// 全選
+$("selectAll").onchange=e=>{
+  document.querySelectorAll(".cm-check").forEach(cb=>{
+    cb.checked=e.target.checked;
+    if(e.target.checked) selectedIds.add(cb.dataset.id);
+    else selectedIds.delete(cb.dataset.id);
+  });
+  updateSelectedCount();
+};
+function updateSelectedCount(){$("selectedCount").textContent=selectedIds.size;}
+
+// 批次刪除
+$("batchDeleteBtn").onclick=async()=>{
+  if(selectedIds.size===0){alert("請先勾選課程");return;}
+  if(!confirm(`確認刪除 ${selectedIds.size} 筆課程？此操作無法復原。`))return;
+  const btn=$("batchDeleteBtn"); btn.disabled=true; btn.textContent="刪除中…";
+  try{
+    await Promise.all([...selectedIds].map(id=>deleteDoc(doc(db,"schedules",id))));
+    selectedIds.clear(); renderCourseMgr(); renderCalendar();
+  }finally{btn.disabled=false;btn.textContent="批次刪除選取項目";}
+};
+
+// 批次編輯（選取項目 → 開 modal 填欄位）
+$("batchEditBtn").onclick=()=>{
+  if(selectedIds.size===0){alert("請先勾選課程");return;}
+  // 用編輯 modal，但標題改成批次
+  $("ecDocId").value="__batch__";
+  $("editCourseModal").querySelector(".gold-title").textContent=`批次編輯（${selectedIds.size} 筆）`;
+  // 清空所有欄位讓使用者只填要改的
+  const ts=$("ecTeacher"); ts.innerHTML='<option value="">不更改</option>';
+  allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;ts.appendChild(o);});
+  $("ecPeriod").value=""; $("ecStart").value=""; $("ecEnd").value="";
+  $("ecRegion").value=""; $("ecInstitute").value=""; $("ecLevel").value="國中";
+  $("ecYear").value="1"; $("ecClass").value=""; $("ecStudents").value="";
+  $("ecTeacherFee").value=""; $("ecRevenue").value=""; $("ecNote").value="";
+  $("ecStatus").value=""; $("ecCourseType").value="";
+  $("ecMsg").textContent="空白欄位不會被修改";
+  $("ecMsg").className="msg-ok";
+  $("editCourseModal").classList.remove("hidden");
+};
+
+// 條件批次修改（套用至全部篩選結果）
+$("condBatchBtn").onclick=async()=>{
+  if(cmRows.length===0){alert("請先載入課程");return;}
+  const fee=$("batchTeacherFee").value;
+  const rev=$("batchRevenue").value;
+  const tId=$("batchTeacher").value;
+  const st=$("batchStatus").value;
+  const period=$("batchPeriod").value;
+  const fields={};
+  if(fee!=="") fields.teacherFeePerClass=Number(fee);
+  if(rev!=="") fields.instituteRevenuePerClass=Number(rev);
+  if(tId) {fields.teacherId=tId; fields.teacherName=teacherMap[tId]||"";}
+  if(st) fields.status=st;
+  if(period) fields.academicPeriod=period;
+  if(Object.keys(fields).length===0){alert("請至少填寫一個要修改的欄位");return;}
+  if(!confirm(`確認將篩選結果 ${cmRows.length} 筆課程全部套用這些修改？`))return;
+  const btn=$("condBatchBtn"); btn.disabled=true; btn.textContent="套用中…";
+  try{
+    fields.updatedAt=Timestamp.now();
+    await Promise.all(cmRows.map(ev=>updateDoc(doc(db,"schedules",ev.id),fields)));
+    $("condBatchMsg").className="msg-ok"; $("condBatchMsg").textContent=`✓ 已套用至 ${cmRows.length} 筆課程`;
+    renderCourseMgr(); renderCalendar();
+  }catch(e){$("condBatchMsg").className="msg-err";$("condBatchMsg").textContent="失敗："+e.message;}
+  finally{btn.disabled=false;btn.textContent="套用至全部篩選結果";}
+};
 
 window.openEditCourse=async(docId)=>{
   const snap=await getDoc(doc(db,"schedules",docId)); if(!snap.exists())return;
   const ev=snap.data();
   $("ecDocId").value=docId;
-
-  // 填老師下拉
-  const ts=$("ecTeacher"); ts.innerHTML="";
+  $("editCourseModal").querySelector(".gold-title").textContent="編輯課程";
+  const ts=$("ecTeacher"); ts.innerHTML='<option value="">-- 選擇老師 --</option>';
   allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;ts.appendChild(o);});
   ts.value=ev.teacherId||"";
-
   $("ecPeriod").value=ev.academicPeriod||"114上學期";
-  // 時間轉換為 datetime-local 格式
   const toLocal=ts2=>{const d=ts2.toDate();const pad=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;};
   $("ecStart").value=ev.startAt?toLocal(ev.startAt):"";
   $("ecEnd").value=ev.endAt?toLocal(ev.endAt):"";
@@ -879,32 +997,56 @@ window.openEditCourse=async(docId)=>{
   $("ecCourseType").value=ev.courseType||"regular";
   $("ecStatus").value=ev.status||"scheduled";
   $("ecNote").value=ev.note||"";
-  $("ecMsg").textContent="";
-  $("editCourseModal").classList.remove("hidden");
+  $("ecMsg").textContent=""; $("editCourseModal").classList.remove("hidden");
 };
 
 $("ecSaveBtn").onclick=async()=>{
   const docId=$("ecDocId").value; if(!docId)return;
-  const ns=new Date($("ecStart").value), ne=new Date($("ecEnd").value);
+  const isBatch=docId==="__batch__";
+
+  // 批次模式：只更新有填值的欄位
+  if(isBatch){
+    const fields={}; const tId=$("ecTeacher").value;
+    if(tId){fields.teacherId=tId;fields.teacherName=teacherMap[tId]||"";}
+    if($("ecPeriod").value) fields.academicPeriod=$("ecPeriod").value;
+    if($("ecRegion").value.trim()) fields.region=$("ecRegion").value.trim();
+    if($("ecInstitute").value.trim()) fields.instituteName=$("ecInstitute").value.trim();
+    if($("ecTeacherFee").value!=="") fields.teacherFeePerClass=Number($("ecTeacherFee").value);
+    if($("ecRevenue").value!=="") fields.instituteRevenuePerClass=Number($("ecRevenue").value);
+    if($("ecStatus").value) fields.status=$("ecStatus").value;
+    if($("ecCourseType").value) fields.courseType=$("ecCourseType").value;
+    if($("ecNote").value.trim()) fields.note=$("ecNote").value.trim();
+    if(Object.keys(fields).length===0){setMsg($("ecMsg"),"請至少填一個欄位",true);return;}
+    $("ecSaveBtn").disabled=true;$("ecSaveBtn").textContent="儲存中…";
+    try{
+      fields.updatedAt=Timestamp.now();
+      await Promise.all([...selectedIds].map(id=>updateDoc(doc(db,"schedules",id),fields)));
+      setMsg($("ecMsg"),`✓ 已更新 ${selectedIds.size} 筆`,false);
+      setTimeout(()=>{$("editCourseModal").classList.add("hidden");renderCourseMgr();renderCalendar();},1000);
+    }catch(e){setMsg($("ecMsg"),"失敗："+e.message,true);}
+    finally{$("ecSaveBtn").disabled=false;$("ecSaveBtn").textContent="儲存變更";}
+    return;
+  }
+
+  // 單筆模式
+  const ns=new Date($("ecStart").value),ne=new Date($("ecEnd").value);
   if(isNaN(ns)||isNaN(ne)){setMsg($("ecMsg"),"時間格式錯誤",true);return;}
   const tId=$("ecTeacher").value;
-  const level=$("ecLevel").value, year=$("ecYear").value, cls=$("ecClass").value;
+  const level=$("ecLevel").value,year=$("ecYear").value,cls=$("ecClass").value;
   const gradeStr=`${level}${year}年級${cls?`（${cls}）`:""}`;
-  $("ecSaveBtn").disabled=true; $("ecSaveBtn").textContent="儲存中…";
+  $("ecSaveBtn").disabled=true;$("ecSaveBtn").textContent="儲存中…";
   try{
     await updateDoc(doc(db,"schedules",docId),{
-      date:fmtDate(ns), startAt:Timestamp.fromDate(ns), endAt:Timestamp.fromDate(ne),
-      teacherId:tId, teacherName:teacherMap[tId]||"",
+      date:fmtDate(ns),startAt:Timestamp.fromDate(ns),endAt:Timestamp.fromDate(ne),
+      teacherId:tId,teacherName:teacherMap[tId]||"",
       academicPeriod:$("ecPeriod").value,
       instituteName:$("ecInstitute").value.trim(),
-      grade:gradeStr, schoolLevel:level, gradeYear:year, classId:cls,
+      grade:gradeStr,schoolLevel:level,gradeYear:year,classId:cls,
       expectedStudents:Number($("ecStudents").value||0),
       teacherFeePerClass:Number($("ecTeacherFee").value||0),
       instituteRevenuePerClass:Number($("ecRevenue").value||0),
-      courseType:$("ecCourseType").value,
-      status:$("ecStatus").value,
-      note:$("ecNote").value.trim(),
-      region:$("ecRegion").value.trim(),
+      courseType:$("ecCourseType").value,status:$("ecStatus").value,
+      note:$("ecNote").value.trim(),region:$("ecRegion").value.trim(),
       updatedAt:Timestamp.now()
     });
     setMsg($("ecMsg"),"✓ 已儲存",false);
@@ -914,7 +1056,7 @@ $("ecSaveBtn").onclick=async()=>{
 };
 
 window.deleteCourse=async docId=>{
-  if(!confirm("確認刪除此課程？")) return;
+  if(!confirm("確認刪除此課程？"))return;
   await deleteDoc(doc(db,"schedules",docId)); renderCourseMgr(); renderCalendar();
 };
 
