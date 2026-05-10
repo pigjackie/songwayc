@@ -585,7 +585,7 @@
             } else { if(ev.teacherId!==filterTid) return; }
             const pill=document.createElement("div"); pill.className="event-pill";
             pill.innerHTML=`<div class="event-ins">${ev.instituteName||"-"}</div><div class="event-time">${hhmm(ev.startAt.toDate())}–${hhmm(ev.endAt.toDate())}</div><div class="event-grade">${ev.grade||""}</div>${CR==="Admin"?`<div class="event-teacher">👤 ${ev.teacherName||"未指派"}</div>`:""}`;
-            pill.onclick=()=>openEventDetail(ev);
+            pill.onclick=()=>openEventDetail(ev,d.id);
             cell.appendChild(pill);
           });
           grid.appendChild(cell);
@@ -594,7 +594,7 @@
     }
 
     // 課程詳細
-    window.openEventDetail=ev=>{
+    window.openEventDetail=(ev,docId)=>{
       $("eventDetailContent").innerHTML=`
         <div class="gold-title text-base mb-3">${ev.instituteName||"-"}</div>
         <div class="grid grid-cols-2 gap-2 text-xs" style="color:var(--muted)">
@@ -609,8 +609,16 @@
           ${ev.note?`<div>備註</div><div style="color:var(--text)">${ev.note}</div>`:""}
         </div>
         <button onclick="openInsDetail('${ev.instituteName}')" class="btn mt-4 w-full" style="background:rgba(201,168,76,0.15);border:1px solid var(--gold-dim);color:var(--gold);font-size:13px">查看補習班詳細資料 →</button>
+        ${CR==="Admin"&&docId?`<button onclick="deleteSchedule('${docId}')" class="btn mt-2 w-full" style="background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);font-size:13px">刪除此課程</button>`:""}
       `;
       $("eventDetailModal").classList.remove("hidden");
+    };
+
+    window.deleteSchedule=async(docId)=>{
+      if(!confirm("確認刪除此課程？此操作無法復原。")) return;
+      await deleteDoc(doc(db,"schedules",docId));
+      $("eventDetailModal").classList.add("hidden");
+      renderCalendar();
     };
 
     // 補習班詳細
