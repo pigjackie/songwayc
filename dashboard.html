@@ -1,816 +1,839 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>宋維國文 — 教務管理系統</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#080c14;--panel:#0e1420;--panel-2:#141d30;--line:#1e2d4a;--gold:#c9a84c;--gold-light:#e8c96d;--gold-dim:#8a6f2e;--text:#f0ede6;--muted:#7a8499;}
+    :root{--bg:#080c14;--panel:#0e1420;--panel-2:#141d30;--line:#1e2d4a;--gold:#c9a84c;--gold-light:#e8c96d;--gold-dim:#8a6f2e;--text:#f0ede6;--muted:#7a8499;--row:52px;}
     *{box-sizing:border-box;}
-    body{background:var(--bg);background-image:radial-gradient(ellipse at 10% 0%,rgba(201,168,76,0.06) 0%,transparent 50%),repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(30,45,74,0.12) 60px,rgba(30,45,74,0.12) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(30,45,74,0.07) 60px,rgba(30,45,74,0.07) 61px);color:var(--text);font-family:'Noto Serif TC',serif;min-height:100vh;}
+    body{background:var(--bg);background-image:radial-gradient(ellipse at 10% 0%,rgba(201,168,76,.06) 0%,transparent 50%),repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(30,45,74,.12) 60px,rgba(30,45,74,.12) 61px);color:var(--text);font-family:'Noto Serif TC',serif;min-height:100vh;}
     ::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:4px;}
-    .luxe-card{background:linear-gradient(145deg,rgba(14,20,32,0.97),rgba(10,15,24,0.97));border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(201,168,76,0.07);position:relative;overflow:hidden;}
-    .luxe-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.35),transparent);}
-    .gold-title{color:var(--gold);letter-spacing:0.08em;font-family:'Playfair Display','Noto Serif TC',serif;}
+    .luxe-card{background:linear-gradient(145deg,rgba(14,20,32,.97),rgba(10,15,24,.97));border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(201,168,76,.07);position:relative;overflow:hidden;}
+    .luxe-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent);}
+    .gold-title{color:var(--gold);letter-spacing:.08em;font-family:'Playfair Display','Noto Serif TC',serif;}
     .mono{font-family:'JetBrains Mono',monospace;}
-    .input,select,textarea{width:100%;background:rgba(8,12,20,0.8);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 14px;font-family:'Noto Serif TC',serif;font-size:14px;transition:border-color 0.2s,box-shadow 0.2s;outline:none;}
-    .input:focus,select:focus{border-color:var(--gold-dim);box-shadow:0 0 0 2px rgba(201,168,76,0.1);}
+    .input,select,textarea{width:100%;background:rgba(8,12,20,.8);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 14px;font-family:'Noto Serif TC',serif;font-size:14px;transition:border-color .2s,box-shadow .2s;outline:none;}
+    .input:focus,select:focus{border-color:var(--gold-dim);box-shadow:0 0 0 2px rgba(201,168,76,.1);}
     select option{background:var(--panel);}
-    .btn{border-radius:8px;padding:10px 16px;color:white;font-size:14px;font-family:'Noto Serif TC',serif;cursor:pointer;border:none;transition:opacity 0.2s,transform 0.1s;letter-spacing:0.03em;}
-    .btn:hover{opacity:0.85;transform:translateY(-1px);}
+    .btn{border-radius:8px;padding:10px 16px;color:#fff;font-size:14px;font-family:'Noto Serif TC',serif;cursor:pointer;border:none;transition:opacity .2s,transform .1s;letter-spacing:.03em;}
+    .btn:hover{opacity:.85;transform:translateY(-1px);}
     .btn:active{transform:translateY(0);}
-    .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+    .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
     .btn-gold{background:linear-gradient(135deg,#8a6f2e,#c9a84c,#8a6f2e);background-size:200% 100%;color:#080c14;font-weight:700;border:1px solid var(--gold-dim);}
     .btn-gold:hover{background-position:right;opacity:1;}
-    header{border-bottom:1px solid var(--line);background:rgba(8,12,20,0.92);backdrop-filter:blur(12px);}
-    .nav-item{padding:8px 12px;border-radius:6px;border:1px solid transparent;cursor:pointer;font-size:13px;color:var(--muted);transition:all 0.2s;display:block;width:100%;text-align:left;}
-    .nav-item:hover{color:var(--gold-light);border-color:var(--line);background:rgba(201,168,76,0.05);}
-    .nav-item.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,168,76,0.08);}
+    .btn-red{background:rgba(192,57,43,.35);border:1px solid rgba(192,57,43,.5);}
+    .btn-teal{background:#0f766e;}
+    header{border-bottom:1px solid var(--line);background:rgba(8,12,20,.92);backdrop-filter:blur(12px);}
+    .nav-item{padding:8px 12px;border-radius:6px;border:1px solid transparent;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;display:block;width:100%;text-align:left;}
+    .nav-item:hover{color:var(--gold-light);border-color:var(--line);background:rgba(201,168,76,.05);}
+    .nav-item.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,168,76,.08);}
     .section-panel{display:none;}.section-panel.active{display:block;}
     .gold-divider{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);margin:16px 0;}
     .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-family:'JetBrains Mono',monospace;}
-    .badge-admin{background:rgba(201,168,76,0.15);border:1px solid var(--gold-dim);color:var(--gold);}
-    .badge-teacher{background:rgba(30,45,74,0.8);border:1px solid var(--line);color:var(--muted);}
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;}
-    .modal-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;width:100%;max-width:480px;box-shadow:0 30px 80px rgba(0,0,0,0.6);position:relative;max-height:90vh;overflow-y:auto;}
-    .modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5),transparent);}
+    .badge-admin{background:rgba(201,168,76,.15);border:1px solid var(--gold-dim);color:var(--gold);}
+    .badge-teacher{background:rgba(30,45,74,.8);border:1px solid var(--line);color:var(--muted);}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(4px);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .modal-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;width:100%;max-width:500px;box-shadow:0 30px 80px rgba(0,0,0,.6);position:relative;max-height:92vh;overflow-y:auto;}
+    .modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);}
     .msg-ok{color:#6ee7b7;font-size:13px;text-align:center;}
     .msg-err{color:#fca5a5;font-size:13px;text-align:center;}
-    /* Calendar */
-    .cal-wrap{overflow:auto;max-height:68vh;border:1px solid var(--line);border-radius:8px;}
-    .cal-grid{display:grid;min-width:700px;}
-    .cal-header-row{display:contents;}
-    .cal-time{font-size:11px;color:var(--muted);padding:6px 8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(8,12,20,0.95);font-family:'JetBrains Mono',monospace;text-align:right;position:sticky;left:0;z-index:2;}
-    .cal-day-header{font-size:12px;color:var(--muted);padding:8px 4px;border-bottom:2px solid var(--gold-dim);background:rgba(8,12,20,0.95);text-align:center;position:sticky;top:0;z-index:3;}
-    .cal-corner{position:sticky;top:0;left:0;z-index:4;background:rgba(8,12,20,0.95);border-right:1px solid var(--line);border-bottom:2px solid var(--gold-dim);}
-    .cal-cell{border-bottom:1px solid rgba(30,45,74,0.5);border-right:1px solid rgba(30,45,74,0.3);padding:4px;min-height:48px;background:rgba(10,14,22,0.5);vertical-align:top;}
-    .cal-cell:hover{background:rgba(201,168,76,0.03);}
-    .event-pill{background:linear-gradient(135deg,rgba(138,111,46,0.35),rgba(201,168,76,0.12));border:1px solid var(--gold-dim);border-radius:6px;padding:5px 7px;margin-bottom:3px;font-size:11px;line-height:1.5;cursor:pointer;transition:border-color 0.2s;}
-    .event-pill:hover{border-color:var(--gold);}
-    .event-ins{color:var(--gold-light);font-weight:700;}
-    .event-time{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;}
-    .event-grade{color:#93c5fd;font-size:10px;}
-    .event-teacher{color:#86efac;font-size:10px;}
-    /* User rows */
+    /* ── 時間軸行事曆 ── */
+    .cal-wrap{overflow:auto;max-height:72vh;border:1px solid var(--line);border-radius:8px;position:relative;}
+    .cal-table{width:100%;border-collapse:collapse;min-width:680px;}
+    .cal-th{background:rgba(8,12,20,.97);border-bottom:2px solid var(--gold-dim);padding:8px 4px;text-align:center;font-size:12px;color:var(--muted);position:sticky;top:0;z-index:5;}
+    .cal-th.today-col{color:var(--gold);font-weight:700;}
+    .cal-time-col{width:52px;background:rgba(8,12,20,.95);border-right:1px solid var(--line);font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right;padding:0 6px;vertical-align:top;position:sticky;left:0;z-index:2;white-space:nowrap;}
+    .cal-day-col{border-right:1px solid rgba(30,45,74,.4);padding:0;vertical-align:top;position:relative;}
+    .cal-row{height:var(--row);}
+    .cal-row td{border-bottom:1px solid rgba(30,45,74,.35);}
+    .cal-half{border-bottom:1px dashed rgba(30,45,74,.2);}
+    .day-col-inner{position:relative;background:rgba(10,14,22,.5);}
+    /* 課程區塊（絕對定位） */
+    .ev-block{position:absolute;left:2px;right:2px;border-radius:6px;padding:4px 6px;font-size:11px;line-height:1.45;cursor:pointer;overflow:hidden;z-index:2;transition:filter .15s;}
+    .ev-block:hover{filter:brightness(1.2);}
+    .ev-block.status-scheduled{background:linear-gradient(160deg,rgba(138,111,46,.45),rgba(201,168,76,.18));border:1px solid var(--gold-dim);}
+    .ev-block.status-checkedin{background:linear-gradient(160deg,rgba(15,118,110,.55),rgba(52,211,153,.15));border:1px solid #0f766e;}
+    .ev-block.status-absent{background:linear-gradient(160deg,rgba(127,29,29,.55),rgba(248,113,113,.12));border:1px solid #7f1d1d;}
+    .ev-block.status-rescheduled{background:linear-gradient(160deg,rgba(55,48,163,.55),rgba(129,140,248,.15));border:1px solid #3730a3;}
+    .ev-block.status-cancelled{background:rgba(30,30,30,.7);border:1px solid #374151;opacity:.6;}
+    .ev-ins{color:var(--gold-light);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .ev-time{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;}
+    .ev-grade{color:#93c5fd;font-size:10px;}
+    .ev-teacher{color:#86efac;font-size:10px;}
+    .ev-status{font-size:10px;font-weight:700;}
+    /* 動作按鈕格 */
+    .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+    /* 使用者列 */
     .user-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px;}
     .user-card:last-child{border-bottom:none;}
-    .user-card:hover{background:rgba(201,168,76,0.03);}
-    /* Roster rows */
+    .user-card:hover{background:rgba(201,168,76,.03);}
+    /* 名冊 */
     .roster-row{padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px;display:flex;justify-content:space-between;align-items:center;}
     .roster-row:last-child{border-bottom:none;}
-    /* Institute card */
-    .ins-card{padding:14px;border-radius:10px;border:1px solid var(--line);background:rgba(8,12,20,0.7);transition:border-color 0.2s;cursor:pointer;}
+    /* 補習班卡片 */
+    .ins-card{padding:14px;border-radius:10px;border:1px solid var(--line);background:rgba(8,12,20,.7);transition:border-color .2s;cursor:pointer;}
     .ins-card:hover{border-color:var(--gold-dim);}
-    .recurring-box{background:rgba(201,168,76,0.04);border:1px dashed var(--gold-dim);padding:14px;border-radius:8px;}
+    .recurring-box{background:rgba(201,168,76,.04);border:1px dashed var(--gold-dim);padding:14px;border-radius:8px;}
+    /* 薪資卡 */
+    .salary-card{background:rgba(8,12,20,.6);border:1px solid var(--line);border-radius:10px;padding:16px;}
+    .salary-num{font-family:'JetBrains Mono',monospace;color:var(--gold);font-size:1.1rem;font-weight:700;}
   </style>
 </head>
 <body>
-  <header class="sticky top-0 z-10">
-    <div class="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between gap-3">
-      <div>
-        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold);letter-spacing:0.1em;text-shadow:0 0 20px rgba(201,168,76,0.35)">Songwayc</div>
-        <p id="userInfo" class="mono" style="font-size:11px;color:var(--muted);margin-top:1px"></p>
-      </div>
-      <div class="flex items-center gap-2 flex-wrap justify-end">
-        <button id="dayBtn" class="btn" style="background:var(--panel-2);font-size:12px;padding:7px 11px">日</button>
-        <button id="weekBtn" class="btn" style="background:var(--gold-dim);font-size:12px;padding:7px 11px">週</button>
-        <button id="changePwdBtn" class="btn" style="background:#0f766e;font-size:12px;padding:7px 12px">修改密碼</button>
-        <button id="logoutBtn" class="btn" style="background:rgba(192,57,43,0.35);border:1px solid rgba(192,57,43,0.5);font-size:12px;padding:7px 12px">登出</button>
-      </div>
+<header class="sticky top-0 z-10">
+  <div class="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between gap-3">
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold);letter-spacing:.1em;text-shadow:0 0 20px rgba(201,168,76,.35)">Songwayc</div>
+      <p id="userInfo" class="mono" style="font-size:11px;color:var(--muted);margin-top:1px"></p>
     </div>
-  </header>
-
-  <main class="max-w-7xl mx-auto p-4 grid lg:grid-cols-12 gap-4">
-    <aside class="lg:col-span-3">
-      <div class="luxe-card rounded-xl p-4 sticky top-20">
-        <div class="gold-title text-sm mb-3" style="letter-spacing:0.12em">功能導覽</div>
-        <hr class="gold-divider" style="margin:0 0 10px 0">
-        <ul id="navList" class="space-y-1"></ul>
-      </div>
-    </aside>
-
-    <section class="lg:col-span-9 space-y-4">
-
-      <!-- ═══ 行事曆 ═══ -->
-      <div id="panel-calendar" class="section-panel luxe-card rounded-xl p-4">
-        <div class="flex flex-wrap justify-between items-center gap-3 mb-3">
-          <h3 class="gold-title text-sm">排程行事曆</h3>
-          <div class="flex gap-2 items-center">
-            <div id="adminTeacherFilter" class="hidden">
-              <select id="filterTeacher" class="input" style="width:160px;padding:7px 10px;font-size:13px">
-                <option value="all">全部老師</option>
-              </select>
-            </div>
-            <input id="targetDate" type="date" class="input" style="max-width:160px;padding:7px 10px;font-size:13px" />
-          </div>
-        </div>
-        <div class="cal-wrap">
-          <div id="calGrid" class="cal-grid"></div>
-        </div>
-      </div>
-
-      <!-- ═══ 新增課程 ═══ -->
-      <div id="panel-schedule" class="section-panel luxe-card rounded-xl p-4">
-        <h3 class="gold-title text-sm mb-4">新增課程（管理者）</h3>
-        <form id="scheduleForm" class="space-y-3">
-          <div class="grid md:grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs" style="color:var(--muted)">指派老師</label>
-              <select id="assignTeacher" class="input mt-1" required><option value="">-- 選擇老師 --</option></select>
-            </div>
-            <div>
-              <label class="text-xs" style="color:var(--muted)">學期區間</label>
-              <select id="academicPeriod" class="input mt-1" required>
-                <option value="">-- 選擇學期 --</option>
-                <option value="114上學期">114 上學期</option>
-                <option value="114寒假">114 寒假</option>
-                <option value="114下學期">114 下學期</option>
-                <option value="114暑假">114 暑假</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs" style="color:var(--muted)">上課時間</label>
-              <input id="startAt" type="datetime-local" required class="input mt-1" />
-            </div>
-            <div>
-              <label class="text-xs" style="color:var(--muted)">下課時間</label>
-              <input id="endAt" type="datetime-local" required class="input mt-1" />
-            </div>
-          </div>
-
-          <div class="recurring-box">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" id="isRecurring" class="w-4 h-4" style="accent-color:var(--gold)">
-              <span class="text-sm font-semibold" style="color:var(--gold-light)">每週固定排課（循環）</span>
-            </label>
-            <div id="recurrenceFields" class="hidden mt-3">
-              <label class="text-xs" style="color:var(--muted)">重複直到（學期結束日）</label>
-              <input id="recurrenceEndDate" type="date" class="input mt-1" />
-            </div>
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs" style="color:var(--muted)">地區</label>
-              <input id="region" placeholder="如：板橋" required class="input mt-1" />
-            </div>
-            <div>
-              <label class="text-xs" style="color:var(--muted)">補習班名稱</label>
-              <input id="instituteName" placeholder="補習班名稱" required class="input mt-1" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-3 gap-3">
-            <div>
-              <label class="text-xs" style="color:var(--muted)">學校層級</label>
-              <select id="schoolLevel" class="input mt-1" required>
-                <option value="">-- 選擇 --</option>
-                <option value="國小">國小</option>
-                <option value="國中">國中</option>
-                <option value="高中">高中</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-xs" style="color:var(--muted)">年級</label>
-              <select id="gradeYear" class="input mt-1" required>
-                <option value="">-- 年級 --</option>
-                <option value="1">一年級</option>
-                <option value="2">二年級</option>
-                <option value="3">三年級</option>
-                <option value="4">四年級（國小）</option>
-                <option value="5">五年級（國小）</option>
-                <option value="6">六年級（國小）</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-xs" style="color:var(--muted)">班級</label>
-              <input id="classId" placeholder="如：忠班、A班" class="input mt-1" />
-            </div>
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs" style="color:var(--muted)">預估人數</label>
-              <input id="expectedStudents" type="number" min="1" placeholder="人數" required class="input mt-1" />
-            </div>
-            <div>
-              <label class="text-xs" style="color:var(--muted)">課程類型</label>
-              <select id="courseType" class="input mt-1" required>
-                <option value="">-- 選擇 --</option>
-                <option value="regular">常態排課</option>
-                <option value="single">單次代調課</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="text-xs" style="color:var(--muted)">備註</label>
-            <textarea id="scheduleNote" placeholder="備註（選填）" class="input mt-1" rows="2"></textarea>
-          </div>
-
-          <button id="saveScheduleBtn" class="btn btn-gold w-full" type="submit">確認新增並排入課表</button>
-        </form>
-        <p id="scheduleMsg" class="mt-3 text-center text-sm"></p>
-      </div>
-
-      <!-- ═══ 打卡 ═══ -->
-      <div id="panel-attendance" class="section-panel luxe-card rounded-xl p-4">
-        <h3 class="gold-title text-sm mb-4">打卡與日誌</h3>
-        <div class="grid md:grid-cols-2 gap-3 mb-4">
-          <select id="attendanceSchedule" class="input"></select>
-          <button id="reloadSchedules" class="btn" style="background:var(--panel-2)">載入今日課表</button>
-        </div>
-        <form id="checkInForm" class="grid md:grid-cols-2 gap-3 mb-4">
-          <input id="checkInPhoto" type="file" accept="image/*" capture="environment" required class="input" />
-          <button class="btn" style="background:#3730a3" type="submit">上課打卡</button>
-        </form>
-        <hr class="gold-divider">
-        <form id="checkOutForm" class="grid md:grid-cols-2 gap-3">
-          <input id="checkOutPhoto" type="file" accept="image/*" capture="environment" required class="input" />
-          <input id="teachingProgress" placeholder="教學進度" required class="input" />
-          <input id="testScope" placeholder="測驗範圍" required class="input" />
-          <input id="scoreRange" placeholder="成績區間" required class="input" />
-          <input id="homework" placeholder="回家作業" required class="input" />
-          <input id="examPaperCode" placeholder="考卷代碼" required class="input" />
-          <button class="btn btn-gold md:col-span-2" type="submit">下課打卡提交日誌</button>
-        </form>
-        <p id="attendanceMsg" class="mt-2"></p>
-      </div>
-
-      <!-- ═══ 補習班 ═══ -->
-      <div id="panel-institutes" class="section-panel luxe-card rounded-xl p-4">
-        <h3 class="gold-title text-sm mb-4">補習班資料庫</h3>
-        <form id="instituteForm" class="grid md:grid-cols-2 gap-3 mb-4">
-          <input id="insName" placeholder="補習班名稱" required class="input" />
-          <input id="insOwner" placeholder="負責人" class="input" />
-          <input id="insDirectorContact" placeholder="主任聯絡方式" class="input" />
-          <input id="insLine" placeholder="LINE 帳號" class="input" />
-          <input id="insCopier" placeholder="影印機密碼" class="input" />
-          <input id="insParking" placeholder="停車規定" class="input" />
-          <input id="insAddress" placeholder="地址" class="input" />
-          <input id="insPhone" placeholder="電話" class="input" />
-          <textarea id="insNote" placeholder="備註" class="input md:col-span-2" rows="2"></textarea>
-          <button class="btn btn-gold md:col-span-2" type="submit">新增補習班</button>
-        </form>
-        <div id="instituteCards" class="grid md:grid-cols-2 gap-3"></div>
-      </div>
-
-      <!-- ═══ 名冊管理 ═══ -->
-      <div id="panel-rosters" class="section-panel luxe-card rounded-xl p-4">
-        <h3 class="gold-title text-sm mb-4">名冊管理</h3>
-        <div class="grid md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="text-xs mb-3 font-semibold" style="color:var(--gold-light)">儲備老師</h4>
-            <div class="space-y-2 mb-3">
-              <input id="rtName" placeholder="姓名" class="input" />
-              <input id="rtPhone" placeholder="電話" class="input" />
-              <input id="rtSubject" placeholder="專長科目" class="input" />
-              <input id="rtNote" placeholder="備註" class="input" />
-              <button id="addRT" class="btn w-full" style="background:#4f46e5">新增儲備老師</button>
-            </div>
-            <div id="rtList" class="rounded-lg overflow-hidden" style="border:1px solid var(--line)"></div>
-          </div>
-          <div>
-            <h4 class="text-xs mb-3 font-semibold" style="color:var(--gold-light)">合作廠商</h4>
-            <div class="space-y-2 mb-3">
-              <input id="vdName" placeholder="廠商名稱" class="input" />
-              <input id="vdService" placeholder="服務內容" class="input" />
-              <input id="vdContact" placeholder="聯絡人" class="input" />
-              <input id="vdPhone" placeholder="電話" class="input" />
-              <button id="addVD" class="btn w-full" style="background:#0891b2">新增廠商</button>
-            </div>
-            <div id="vdList" class="rounded-lg overflow-hidden" style="border:1px solid var(--line)"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ═══ 薪資（僅 Admin）═══ -->
-      <div id="panel-salary" class="section-panel luxe-card rounded-xl p-4">
-        <h3 class="gold-title text-sm mb-4">薪資管理</h3>
-        <form id="salaryConfigForm" class="grid md:grid-cols-2 gap-3 mb-4">
-          <div>
-            <label class="text-xs" style="color:var(--muted)">選擇老師</label>
-            <select id="salaryTeacherSel" class="input mt-1"><option value="">-- 選擇老師 --</option></select>
-          </div>
-          <div>
-            <label class="text-xs" style="color:var(--muted)">基本鐘點費（元/小時）</label>
-            <input id="baseRate" type="number" placeholder="如：500" class="input mt-1" />
-          </div>
-          <div>
-            <label class="text-xs" style="color:var(--muted)">人數獎金門檻</label>
-            <input id="bonusThreshold" type="number" placeholder="如：20" class="input mt-1" />
-          </div>
-          <div>
-            <label class="text-xs" style="color:var(--muted)">每超過1人獎金</label>
-            <input id="bonusPerStudent" type="number" placeholder="如：50" class="input mt-1" />
-          </div>
-          <button class="btn btn-gold md:col-span-2" type="submit">儲存薪資參數</button>
-        </form>
-        <hr class="gold-divider">
-        <form id="salaryCalcForm" class="grid md:grid-cols-3 gap-3">
-          <div>
-            <label class="text-xs" style="color:var(--muted)">選擇老師</label>
-            <select id="settleTeacherSel" class="input mt-1"><option value="">-- 選擇老師 --</option></select>
-          </div>
-          <div>
-            <label class="text-xs" style="color:var(--muted)">結算月份</label>
-            <input id="settleMonth" type="month" class="input mt-1" />
-          </div>
-          <div class="flex items-end">
-            <button class="btn btn-gold w-full" type="submit">計算月結</button>
-          </div>
-        </form>
-        <div id="salaryResult" class="mt-4 mono text-sm text-center p-3 rounded" style="background:rgba(201,168,76,0.05);border:1px solid var(--line);display:none"></div>
-      </div>
-
-      <!-- ═══ 使用者管理 ═══ -->
-      <div id="panel-users" class="section-panel luxe-card rounded-xl p-4">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="gold-title text-sm">使用者管理</h3>
-          <button id="openAddUserBtn" class="btn btn-gold" style="font-size:12px;padding:7px 14px">＋ 新增帳號</button>
-        </div>
-        <div id="userList" class="rounded-lg overflow-hidden" style="border:1px solid var(--line)">
-          <div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">載入中…</div>
-        </div>
-      </div>
-
-    </section>
-  </main>
-
-  <!-- ═══ 新增帳號 Modal ═══ -->
-  <div id="addUserModal" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="gold-title text-base mb-4">新增帳號</div>
-      <div class="space-y-3">
-        <input id="newUserName" placeholder="顯示名稱" class="input" />
-        <input id="newUserEmail" type="email" placeholder="Email" class="input" />
-        <input id="newUserPassword" type="password" class="input" value="0000" placeholder="初始密碼" />
-        <select id="newUserRole" class="input">
-          <option value="Teacher">教師 (Teacher)</option>
-          <option value="Admin">管理員 (Admin)</option>
-        </select>
-        <button id="confirmAddUserBtn" class="btn btn-gold w-full">確認新增</button>
-        <button class="btn close-modal w-full" style="background:var(--panel-2)">取消</button>
-      </div>
-      <p id="addUserMsg" class="mt-3 text-center text-sm"></p>
+    <div class="flex items-center gap-2 flex-wrap justify-end">
+      <button id="dayBtn" class="btn" style="background:var(--panel-2);font-size:12px;padding:7px 11px">日</button>
+      <button id="weekBtn" class="btn" style="background:var(--gold-dim);font-size:12px;padding:7px 11px">週</button>
+      <button id="changePwdBtn" class="btn btn-teal" style="font-size:12px;padding:7px 12px">修改密碼</button>
+      <button id="logoutBtn" class="btn btn-red" style="font-size:12px;padding:7px 12px">登出</button>
     </div>
   </div>
+</header>
 
-  <!-- ═══ 編輯帳號 Modal ═══ -->
-  <div id="editUserModal" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="gold-title text-base mb-4">編輯帳號</div>
-      <input type="hidden" id="editUserId" />
-      <div class="space-y-3">
+<main class="max-w-7xl mx-auto p-4 grid lg:grid-cols-12 gap-4">
+  <aside class="lg:col-span-3">
+    <div class="luxe-card rounded-xl p-4 sticky top-20">
+      <div class="gold-title text-sm mb-3" style="letter-spacing:.12em">功能導覽</div>
+      <hr class="gold-divider" style="margin:0 0 10px 0">
+      <ul id="navList" class="space-y-1"></ul>
+      <!-- 圖例 -->
+      <div class="mt-4 space-y-1" style="font-size:11px;color:var(--muted)">
+        <div style="display:flex;gap:6px;align-items:center"><span style="width:12px;height:12px;border-radius:3px;background:rgba(201,168,76,.4);display:inline-block"></span>待上課</div>
+        <div style="display:flex;gap:6px;align-items:center"><span style="width:12px;height:12px;border-radius:3px;background:rgba(15,118,110,.6);display:inline-block"></span>已到班</div>
+        <div style="display:flex;gap:6px;align-items:center"><span style="width:12px;height:12px;border-radius:3px;background:rgba(127,29,29,.6);display:inline-block"></span>請假</div>
+        <div style="display:flex;gap:6px;align-items:center"><span style="width:12px;height:12px;border-radius:3px;background:rgba(55,48,163,.6);display:inline-block"></span>調課</div>
+        <div style="display:flex;gap:6px;align-items:center"><span style="width:12px;height:12px;border-radius:3px;background:#374151;display:inline-block"></span>停課</div>
+      </div>
+    </div>
+  </aside>
+
+  <section class="lg:col-span-9 space-y-4">
+
+    <!-- ═══ 行事曆 ═══ -->
+    <div id="panel-calendar" class="section-panel luxe-card rounded-xl p-4">
+      <div class="flex flex-wrap justify-between items-center gap-3 mb-3">
+        <h3 class="gold-title text-sm">排程行事曆</h3>
+        <div class="flex gap-2 items-center flex-wrap">
+          <div id="adminTeacherFilter" class="hidden">
+            <select id="filterTeacher" class="input" style="width:150px;padding:7px 10px;font-size:13px">
+              <option value="all">全部老師</option>
+            </select>
+          </div>
+          <input id="targetDate" type="date" class="input" style="max-width:155px;padding:7px 10px;font-size:13px"/>
+        </div>
+      </div>
+      <div class="cal-wrap">
+        <table class="cal-table" id="calTable"><thead id="calHead"></thead><tbody id="calBody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ═══ 新增課程 ═══ -->
+    <div id="panel-schedule" class="section-panel luxe-card rounded-xl p-4">
+      <h3 class="gold-title text-sm mb-4">新增課程（管理者）</h3>
+      <form id="scheduleForm" class="space-y-3">
+        <div class="grid md:grid-cols-2 gap-3">
+          <div><label class="text-xs" style="color:var(--muted)">指派老師</label><select id="assignTeacher" class="input mt-1" required><option value="">-- 選擇老師 --</option></select></div>
+          <div><label class="text-xs" style="color:var(--muted)">學期區間</label>
+            <select id="academicPeriod" class="input mt-1" required>
+              <option value="">-- 選擇學期 --</option>
+              <option value="114上學期">114 上學期</option><option value="114寒假">114 寒假</option>
+              <option value="114下學期">114 下學期</option><option value="114暑假">114 暑假</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <div><label class="text-xs" style="color:var(--muted)">上課時間</label><input id="startAt" type="datetime-local" required class="input mt-1"/></div>
+          <div><label class="text-xs" style="color:var(--muted)">下課時間</label><input id="endAt" type="datetime-local" required class="input mt-1"/></div>
+        </div>
+        <div class="recurring-box">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="isRecurring" class="w-4 h-4" style="accent-color:var(--gold)">
+            <span class="text-sm font-semibold" style="color:var(--gold-light)">每週固定排課（循環）</span>
+          </label>
+          <div id="recurrenceFields" class="hidden mt-3">
+            <label class="text-xs" style="color:var(--muted)">重複直到</label>
+            <input id="recurrenceEndDate" type="date" class="input mt-1"/>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <div><label class="text-xs" style="color:var(--muted)">地區</label><input id="region" placeholder="如：板橋" required class="input mt-1"/></div>
+          <div><label class="text-xs" style="color:var(--muted)">補習班名稱</label><input id="instituteName" placeholder="補習班名稱" required class="input mt-1"/></div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div><label class="text-xs" style="color:var(--muted)">學校層級</label>
+            <select id="schoolLevel" class="input mt-1" required>
+              <option value="">-- 選擇 --</option><option value="國小">國小</option><option value="國中">國中</option><option value="高中">高中</option>
+            </select>
+          </div>
+          <div><label class="text-xs" style="color:var(--muted)">年級</label>
+            <select id="gradeYear" class="input mt-1" required>
+              <option value="">-- 年級 --</option><option value="1">一年級</option><option value="2">二年級</option><option value="3">三年級</option><option value="4">四年級</option><option value="5">五年級</option><option value="6">六年級</option>
+            </select>
+          </div>
+          <div><label class="text-xs" style="color:var(--muted)">班級</label><input id="classId" placeholder="如：忠班" class="input mt-1"/></div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <div><label class="text-xs" style="color:var(--muted)">預估人數</label><input id="expectedStudents" type="number" min="1" placeholder="人數" required class="input mt-1"/></div>
+          <div><label class="text-xs" style="color:var(--muted)">課程類型</label>
+            <select id="courseType" class="input mt-1" required>
+              <option value="">-- 選擇 --</option><option value="regular">常態排課</option><option value="single">單次代調課</option>
+            </select>
+          </div>
+          <div><label class="text-xs" style="color:var(--muted)">老師鐘點費（元/堂）</label><input id="teacherFeePerClass" type="number" min="0" placeholder="如：1000" class="input mt-1"/></div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <div><label class="text-xs" style="color:var(--muted)">補習班收費（元/堂）</label><input id="instituteRevenuePerClass" type="number" min="0" placeholder="如：3000" class="input mt-1"/></div>
+          <div><label class="text-xs" style="color:var(--muted)">備註</label><input id="scheduleNote" placeholder="備註（選填）" class="input mt-1"/></div>
+        </div>
+        <button id="saveScheduleBtn" class="btn btn-gold w-full" type="submit">確認新增並排入課表</button>
+      </form>
+      <p id="scheduleMsg" class="mt-3 text-center text-sm"></p>
+    </div>
+
+    <!-- ═══ 補習班 ═══ -->
+    <div id="panel-institutes" class="section-panel luxe-card rounded-xl p-4">
+      <h3 class="gold-title text-sm mb-4">補習班資料庫</h3>
+      <form id="instituteForm" class="grid md:grid-cols-2 gap-3 mb-4">
+        <input id="insName" placeholder="補習班名稱" required class="input"/>
+        <input id="insOwner" placeholder="負責人" class="input"/>
+        <input id="insDirectorContact" placeholder="主任聯絡" class="input"/>
+        <input id="insLine" placeholder="LINE 帳號" class="input"/>
+        <input id="insCopier" placeholder="影印機密碼" class="input"/>
+        <input id="insParking" placeholder="停車規定" class="input"/>
+        <input id="insAddress" placeholder="地址" class="input"/>
+        <input id="insPhone" placeholder="電話" class="input"/>
+        <textarea id="insNote" placeholder="備註" class="input md:col-span-2" rows="2"></textarea>
+        <button class="btn btn-gold md:col-span-2" type="submit">新增補習班</button>
+      </form>
+      <div id="instituteCards" class="grid md:grid-cols-2 gap-3"></div>
+    </div>
+
+    <!-- ═══ 名冊管理 ═══ -->
+    <div id="panel-rosters" class="section-panel luxe-card rounded-xl p-4">
+      <h3 class="gold-title text-sm mb-4">名冊管理</h3>
+      <div class="grid md:grid-cols-2 gap-6">
         <div>
-          <label class="text-xs" style="color:var(--muted)">顯示名稱</label>
-          <input id="editUserName" class="input mt-1" />
+          <h4 class="text-xs mb-3 font-semibold" style="color:var(--gold-light)">儲備老師</h4>
+          <div class="space-y-2 mb-3">
+            <input id="rtName" placeholder="姓名" class="input"/><input id="rtPhone" placeholder="電話" class="input"/>
+            <input id="rtSubject" placeholder="專長科目" class="input"/><input id="rtNote" placeholder="備註" class="input"/>
+            <button id="addRT" class="btn w-full" style="background:#4f46e5">新增儲備老師</button>
+          </div>
+          <div id="rtList" class="rounded-lg overflow-hidden" style="border:1px solid var(--line)"></div>
         </div>
         <div>
-          <label class="text-xs" style="color:var(--muted)">角色</label>
-          <select id="editUserRole" class="input mt-1">
-            <option value="Teacher">教師 (Teacher)</option>
-            <option value="Admin">管理員 (Admin)</option>
-          </select>
+          <h4 class="text-xs mb-3 font-semibold" style="color:var(--gold-light)">合作廠商</h4>
+          <div class="space-y-2 mb-3">
+            <input id="vdName" placeholder="廠商名稱" class="input"/><input id="vdService" placeholder="服務內容" class="input"/>
+            <input id="vdContact" placeholder="聯絡人" class="input"/><input id="vdPhone" placeholder="電話" class="input"/>
+            <button id="addVD" class="btn w-full" style="background:#0891b2">新增廠商</button>
+          </div>
+          <div id="vdList" class="rounded-lg overflow-hidden" style="border:1px solid var(--line)"></div>
         </div>
-        <div>
-          <label class="text-xs" style="color:var(--muted)">狀態</label>
-          <select id="editUserStatus" class="input mt-1">
-            <option value="active">正常</option>
-            <option value="disabled">停權</option>
-          </select>
-        </div>
-        <button id="confirmEditUserBtn" class="btn btn-gold w-full">儲存變更</button>
-        <button class="btn close-modal w-full" style="background:var(--panel-2)">取消</button>
       </div>
-      <p id="editUserMsg" class="mt-3 text-center text-sm"></p>
     </div>
-  </div>
 
-  <!-- ═══ 修改密碼 Modal ═══ -->
-  <div id="changePwdModal" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="gold-title text-base mb-4">修改密碼</div>
-      <div class="space-y-3">
-        <input id="newPassword" type="password" placeholder="新密碼（至少6碼）" class="input" />
-        <input id="confirmPassword" type="password" placeholder="再次確認密碼" class="input" />
-        <button id="confirmPwdBtn" class="btn btn-gold w-full">更新密碼</button>
-        <button class="btn close-modal w-full" style="background:var(--panel-2)">取消</button>
+    <!-- ═══ 薪資（僅 Admin）═══ -->
+    <div id="panel-salary" class="section-panel luxe-card rounded-xl p-4">
+      <h3 class="gold-title text-sm mb-4">薪資 & 收入結算</h3>
+      <div class="grid md:grid-cols-3 gap-3 mb-4">
+        <div><label class="text-xs" style="color:var(--muted)">選擇月份</label><input id="settleMonth" type="month" class="input mt-1"/></div>
+        <div class="flex items-end"><button id="calcAllBtn" class="btn btn-gold w-full">計算當月結算</button></div>
       </div>
-      <p id="pwdMsg" class="mt-3 text-center text-sm"></p>
+      <div id="salaryResult" class="space-y-3"></div>
     </div>
-  </div>
 
-  <!-- ═══ 補習班詳細 Modal ═══ -->
-  <div id="insDetailModal" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div id="insDetailContent" class="text-sm leading-loose"></div>
-      <button class="btn close-modal w-full mt-5" style="background:var(--panel-2)">關閉</button>
+    <!-- ═══ 使用者管理 ═══ -->
+    <div id="panel-users" class="section-panel luxe-card rounded-xl p-4">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="gold-title text-sm">使用者管理</h3>
+        <button id="openAddUserBtn" class="btn btn-gold" style="font-size:12px;padding:7px 14px">＋ 新增帳號</button>
+      </div>
+      <div id="userList" class="rounded-lg overflow-hidden" style="border:1px solid var(--line)">
+        <div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">載入中…</div>
+      </div>
     </div>
-  </div>
 
-  <!-- ═══ 課程詳細 Modal ═══ -->
-  <div id="eventDetailModal" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div id="eventDetailContent" class="text-sm leading-loose"></div>
-      <button class="btn close-modal w-full mt-5" style="background:var(--panel-2)">關閉</button>
+  </section>
+</main>
+
+<!-- ═══ 課程操作 Modal ═══ -->
+<div id="eventModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div id="eventModalTitle" class="gold-title text-base mb-1"></div>
+    <div id="eventModalSub" style="font-size:12px;color:var(--muted);margin-bottom:16px"></div>
+    <div id="eventModalStatus" class="mb-3 text-center text-sm font-semibold"></div>
+
+    <!-- 到班打卡區 -->
+    <div id="checkInArea" class="hidden space-y-2 mb-3">
+      <label class="text-xs" style="color:var(--muted)">上課打卡照片</label>
+      <input id="ciPhoto" type="file" accept="image/*" capture="environment" class="input"/>
+      <button id="ciBtn" class="btn w-full" style="background:#0f766e">確認到班打卡</button>
+      <p id="ciMsg" class="text-center text-xs"></p>
     </div>
+
+    <!-- 操作按鈕 -->
+    <div id="actionBtns" class="action-grid"></div>
+
+    <!-- 調課表單 -->
+    <div id="rescheduleArea" class="hidden mt-3 space-y-2">
+      <hr class="gold-divider">
+      <div class="text-xs font-semibold" style="color:var(--gold-light)">調課 — 新時間</div>
+      <input id="rsStart" type="datetime-local" class="input"/>
+      <input id="rsEnd" type="datetime-local" class="input"/>
+      <input id="rsNote" placeholder="調課原因（選填）" class="input"/>
+      <button id="rsBtn" class="btn btn-gold w-full">確認調課</button>
+      <p id="rsMsg" class="text-center text-xs"></p>
+    </div>
+
+    <button class="btn close-modal w-full mt-4" style="background:var(--panel-2)">關閉</button>
   </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, Timestamp, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
+<!-- 補習班詳細 Modal -->
+<div id="insDetailModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div id="insDetailContent" class="text-sm leading-loose"></div>
+    <button class="btn close-modal w-full mt-5" style="background:var(--panel-2)">關閉</button>
+  </div>
+</div>
 
-    const FC={apiKey:"AIzaSyDwu_7-Dt8S5g9jsyYcZI-5SQ-Wdc5pxqE",authDomain:"songwayc-2fba1.firebaseapp.com",projectId:"songwayc-2fba1",storageBucket:"songwayc-2fba1.firebasestorage.app",messagingSenderId:"560805644727",appId:"1:560805644727:web:3894efaff8479f1203c032"};
-    const app=initializeApp(FC),auth=getAuth(app),db=getFirestore(app),storage=getStorage(app);
-    const $=id=>document.getElementById(id);
-    let CU=null,CR="Teacher",CM="week",todaySchedules=[],teacherMap={},allUsers=[];
+<!-- 新增帳號 Modal -->
+<div id="addUserModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="gold-title text-base mb-4">新增帳號</div>
+    <div class="space-y-3">
+      <input id="newUserName" placeholder="顯示名稱" class="input"/>
+      <input id="newUserEmail" type="email" placeholder="Email" class="input"/>
+      <input id="newUserPassword" type="password" class="input" value="0000" placeholder="初始密碼"/>
+      <select id="newUserRole" class="input"><option value="Teacher">教師 (Teacher)</option><option value="Admin">管理員 (Admin)</option></select>
+      <button id="confirmAddUserBtn" class="btn btn-gold w-full">確認新增</button>
+      <button class="btn close-modal w-full" style="background:var(--panel-2)">取消</button>
+    </div>
+    <p id="addUserMsg" class="mt-3 text-center text-sm"></p>
+  </div>
+</div>
 
-    // 關閉 modal
-    document.querySelectorAll(".close-modal").forEach(b=>b.onclick=e=>e.target.closest(".modal-overlay").classList.add("hidden"));
-    document.querySelectorAll(".modal-overlay").forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.add("hidden");});
+<!-- 編輯帳號 Modal -->
+<div id="editUserModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="gold-title text-base mb-4">編輯帳號</div>
+    <input type="hidden" id="editUserId"/>
+    <div class="space-y-3">
+      <div><label class="text-xs" style="color:var(--muted)">顯示名稱</label><input id="editUserName" class="input mt-1"/></div>
+      <div><label class="text-xs" style="color:var(--muted)">角色</label><select id="editUserRole" class="input mt-1"><option value="Teacher">教師</option><option value="Admin">管理員</option></select></div>
+      <div><label class="text-xs" style="color:var(--muted)">狀態</label><select id="editUserStatus" class="input mt-1"><option value="active">正常</option><option value="disabled">停權</option></select></div>
+      <button id="confirmEditUserBtn" class="btn btn-gold w-full">儲存變更</button>
+      <button class="btn close-modal w-full" style="background:var(--panel-2)">取消</button>
+    </div>
+    <p id="editUserMsg" class="mt-3 text-center text-sm"></p>
+  </div>
+</div>
 
-    const adminNav=[{l:"排程行事曆",p:"calendar"},{l:"新增課程",p:"schedule"},{l:"打卡紀錄",p:"attendance"},{l:"補習班庫",p:"institutes"},{l:"名冊管理",p:"rosters"},{l:"薪資管理",p:"salary"},{l:"用戶管理",p:"users"}];
-    const teacherNav=[{l:"我的課表",p:"calendar"},{l:"打卡日誌",p:"attendance"}];
+<!-- 修改密碼 Modal -->
+<div id="changePwdModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="gold-title text-base mb-4">修改密碼</div>
+    <div class="space-y-3">
+      <input id="newPassword" type="password" placeholder="新密碼（至少6碼）" class="input"/>
+      <input id="confirmPassword" type="password" placeholder="再次確認" class="input"/>
+      <button id="confirmPwdBtn" class="btn btn-gold w-full">更新密碼</button>
+      <button class="btn close-modal w-full" style="background:var(--panel-2)">取消</button>
+    </div>
+    <p id="pwdMsg" class="mt-3 text-center text-sm"></p>
+  </div>
+</div>
 
-    // ── AUTH ──
-    onAuthStateChanged(auth,async u=>{
-      if(!u){window.location.href="index.html";return;}
-      const snap=await getDoc(doc(db,"users",u.uid));
-      const ud=snap.exists()?snap.data():{};
-      if(ud.status==="disabled"){alert("此帳號已被停權");await signOut(auth);return;}
-      CU=u; CR=ud.role||"Teacher";
-      $("userInfo").textContent=`${ud.displayName||u.email}  ·  ${CR}`;
-      drawNav();
-      $("targetDate").value=fmtDate(new Date());
-      if(CR==="Admin") $("adminTeacherFilter").classList.remove("hidden");
-      await loadAllUsers();
-      setMode("week");
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, Timestamp, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
+
+const FC={apiKey:"AIzaSyDwu_7-Dt8S5g9jsyYcZI-5SQ-Wdc5pxqE",authDomain:"songwayc-2fba1.firebaseapp.com",projectId:"songwayc-2fba1",storageBucket:"songwayc-2fba1.firebasestorage.app",messagingSenderId:"560805644727",appId:"1:560805644727:web:3894efaff8479f1203c032"};
+const app=initializeApp(FC),auth=getAuth(app),db=getFirestore(app),storage=getStorage(app);
+const $=id=>document.getElementById(id);
+const ROW_H=52; // px per hour (matches --row CSS var)
+const CAL_START=7; // 07:00
+
+let CU=null,CR="Teacher",CM="week",allUsers=[],teacherMap={};
+let currentEventDocId=null,currentEventData=null;
+
+const adminNav=[{l:"排程行事曆",p:"calendar"},{l:"新增課程",p:"schedule"},{l:"補習班庫",p:"institutes"},{l:"名冊管理",p:"rosters"},{l:"薪資結算",p:"salary"},{l:"用戶管理",p:"users"}];
+const teacherNav=[{l:"我的課表",p:"calendar"}];
+
+// ── 關閉 modal ──
+document.querySelectorAll(".close-modal").forEach(b=>b.onclick=e=>e.target.closest(".modal-overlay").classList.add("hidden"));
+document.querySelectorAll(".modal-overlay").forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.add("hidden");});
+
+// ── AUTH ──
+onAuthStateChanged(auth,async u=>{
+  if(!u){window.location.href="index.html";return;}
+  const snap=await getDoc(doc(db,"users",u.uid));
+  const ud=snap.exists()?snap.data():{};
+  if(ud.status==="disabled"){alert("此帳號已被停權");await signOut(auth);return;}
+  CU=u; CR=ud.role||"Teacher";
+  $("userInfo").textContent=`${ud.displayName||u.email}  ·  ${CR}`;
+  if(CR==="Admin") $("adminTeacherFilter").classList.remove("hidden");
+  await loadAllUsers();
+  drawNav();
+  $("targetDate").value=fmtDate(new Date());
+  setMode("week");
+});
+
+$("logoutBtn").onclick=()=>signOut(auth);
+$("dayBtn").onclick=()=>setMode("day");
+$("weekBtn").onclick=()=>setMode("week");
+$("targetDate").onchange=()=>renderCalendar();
+$("filterTeacher").onchange=()=>renderCalendar();
+$("isRecurring").onchange=e=>$("recurrenceFields").classList.toggle("hidden",!e.target.checked);
+
+// ── 修改密碼 ──
+$("changePwdBtn").onclick=()=>{$("changePwdModal").classList.remove("hidden");$("pwdMsg").textContent="";$("newPassword").value="";$("confirmPassword").value="";};
+$("confirmPwdBtn").onclick=async()=>{
+  const p=$("newPassword").value,c=$("confirmPassword").value;
+  if(p.length<6){$("pwdMsg").className="msg-err";$("pwdMsg").textContent="密碼至少6碼";return;}
+  if(p!==c){$("pwdMsg").className="msg-err";$("pwdMsg").textContent="兩次密碼不一致";return;}
+  try{await updatePassword(CU,p);$("pwdMsg").className="msg-ok";$("pwdMsg").textContent="✓ 密碼已更新";setTimeout(()=>$("changePwdModal").classList.add("hidden"),1200);}
+  catch(e){$("pwdMsg").className="msg-err";$("pwdMsg").textContent=e.code==="auth/requires-recent-login"?"請重新登入後修改":e.message;}
+};
+
+// ── NAV ──
+function drawNav(){
+  const nav=$("navList"); nav.innerHTML="";
+  (CR==="Admin"?adminNav:teacherNav).forEach((s,i)=>{
+    const li=document.createElement("li"); li.className="nav-item"; li.textContent=s.l;
+    li.onclick=()=>showPanel(s.p,li); nav.appendChild(li);
+    if(i===0) setTimeout(()=>li.click(),80);
+  });
+}
+async function showPanel(p,el){
+  document.querySelectorAll(".section-panel").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
+  $("panel-"+p)?.classList.add("active"); el?.classList.add("active");
+  if(p==="calendar") renderCalendar();
+  if(p==="schedule"&&CR==="Admin") populateTeacherDropdowns();
+  if(p==="institutes") renderInstitutes();
+  if(p==="rosters") renderRosters();
+  if(p==="salary"&&CR==="Admin") renderSalaryPanel();
+  if(p==="users") renderUserList();
+}
+
+// ── 使用者 ──
+async function loadAllUsers(){
+  const snap=await getDocs(collection(db,"users")); allUsers=[]; teacherMap={};
+  snap.forEach(d=>{const u={id:d.id,...d.data()};allUsers.push(u);teacherMap[d.id]=u.displayName||u.email;});
+  const fs=$("filterTeacher"); fs.innerHTML='<option value="all">全部老師</option>';
+  allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;fs.appendChild(o);});
+}
+function populateTeacherDropdowns(){
+  [$("assignTeacher")].forEach(sel=>{
+    if(!sel)return; sel.innerHTML='<option value="">-- 選擇老師 --</option>';
+    allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;sel.appendChild(o);});
+  });
+}
+
+// ── 新增課程 ──
+$("scheduleForm").onsubmit=async e=>{
+  e.preventDefault(); if(CR!=="Admin")return;
+  const btn=$("saveScheduleBtn"); btn.disabled=true; btn.textContent="排課中…";
+  const tId=$("assignTeacher").value;
+  const baseStart=new Date($("startAt").value), baseEnd=new Date($("endAt").value);
+  const isRec=$("isRecurring").checked, recEnd=new Date($("recurrenceEndDate").value);
+  const level=$("schoolLevel").value, year=$("gradeYear").value, cls=$("classId").value;
+  const gradeStr=`${level}${year}年級${cls?`（${cls}）`:""}`;
+  try{
+    let s=new Date(baseStart),en=new Date(baseEnd),count=0;
+    const limit=isRec?recEnd:new Date(baseStart);
+    while(s<=limit){
+      await addDoc(collection(db,"schedules"),{
+        date:fmtDate(s), startAt:Timestamp.fromDate(new Date(s)), endAt:Timestamp.fromDate(new Date(en)),
+        teacherId:tId, teacherName:teacherMap[tId]||"",
+        academicPeriod:$("academicPeriod").value,
+        instituteName:$("instituteName").value.trim(),
+        grade:gradeStr, schoolLevel:level, gradeYear:year, classId:cls,
+        expectedStudents:Number($("expectedStudents").value),
+        region:$("region").value.trim(), courseType:$("courseType").value,
+        teacherFeePerClass:Number($("teacherFeePerClass").value||0),
+        instituteRevenuePerClass:Number($("instituteRevenuePerClass").value||0),
+        note:$("scheduleNote").value.trim(),
+        status:"scheduled", createdAt:Timestamp.now()
+      });
+      if(!isRec)break;
+      s.setDate(s.getDate()+7); en.setDate(en.getDate()+7); count++;
+    }
+    e.target.reset(); $("recurrenceFields").classList.add("hidden");
+    setMsg($("scheduleMsg"),`✓ 成功建立 ${count||1} 堂課程！`,false);
+    renderCalendar();
+  }catch(err){setMsg($("scheduleMsg"),"錯誤："+err.message,true);}
+  finally{btn.disabled=false; btn.textContent="確認新增並排入課表";}
+};
+
+// ── 行事曆（時間軸版）──
+function setMode(m){
+  CM=m;
+  $("dayBtn").style.background=m==="day"?"var(--gold-dim)":"var(--panel-2)";
+  $("weekBtn").style.background=m==="week"?"var(--gold-dim)":"var(--panel)";
+  renderCalendar();
+}
+
+async function renderCalendar(){
+  const base=new Date($("targetDate").value||fmtDate(new Date()));
+  const days=CM==="day"?[base]:weekDays(base);
+  const filterTid=CR==="Admin"?$("filterTeacher").value:"self";
+  const todayStr=fmtDate(new Date());
+
+  // 撈資料
+  const allEventsSnap=await Promise.all(days.map(d=>getDocs(query(collection(db,"schedules"),where("date","==",fmtDate(d))))));
+
+  // 整理每天的事件
+  const dayEvents=allEventsSnap.map((snap,idx)=>{
+    const evs=[];
+    snap.forEach(d=>{
+      const ev={id:d.id,...d.data()};
+      if(CR!=="Admin"&&ev.teacherId!==CU.uid)return;
+      if(CR==="Admin"&&filterTid!=="all"&&ev.teacherId!==filterTid)return;
+      evs.push(ev);
     });
+    return evs;
+  });
 
-    $("logoutBtn").onclick=()=>signOut(auth);
-    $("dayBtn").onclick=()=>setMode("day");
-    $("weekBtn").onclick=()=>setMode("week");
-    $("targetDate").onchange=()=>renderCalendar();
-    $("filterTeacher").onchange=()=>renderCalendar();
-    $("isRecurring").onchange=e=>$("recurrenceFields").classList.toggle("hidden",!e.target.checked);
+  // Header
+  const head=$("calHead"); head.innerHTML="";
+  const hRow=document.createElement("tr");
+  const corner=document.createElement("th"); corner.className="cal-th"; corner.style.width="52px"; corner.textContent=""; hRow.appendChild(corner);
+  days.forEach((d,i)=>{
+    const th=document.createElement("th"); th.className="cal-th"+(fmtDate(d)===todayStr?" today-col":"");
+    th.innerHTML=`${d.getMonth()+1}/${d.getDate()}<br><span style="font-size:10px">${"日一二三四五六"[d.getDay()]}</span>`;
+    hRow.appendChild(th);
+  });
+  head.appendChild(hRow);
 
-    // ── 修改密碼 ──
-    $("changePwdBtn").onclick=()=>{$("changePwdModal").classList.remove("hidden");$("pwdMsg").textContent="";$("newPassword").value="";$("confirmPassword").value="";};
-    $("confirmPwdBtn").onclick=async()=>{
-      const p=$("newPassword").value,c=$("confirmPassword").value;
-      if(p.length<6){$("pwdMsg").className="msg-err";$("pwdMsg").textContent="密碼至少6碼";return;}
-      if(p!==c){$("pwdMsg").className="msg-err";$("pwdMsg").textContent="兩次密碼不一致";return;}
-      try{
-        await updatePassword(CU,p);
-        $("pwdMsg").className="msg-ok";$("pwdMsg").textContent="✓ 密碼已更新";
-        setTimeout(()=>$("changePwdModal").classList.add("hidden"),1200);
-      }catch(e){$("pwdMsg").className="msg-err";$("pwdMsg").textContent=e.code==="auth/requires-recent-login"?"請重新登入後再修改密碼":e.message;}
-    };
+  // Body — 每小時一行，最後一行加 col-inner 容納事件
+  const body=$("calBody"); body.innerHTML="";
+  const HOURS=Array.from({length:16},(_,i)=>CAL_START+i); // 07-22
 
-    // ── NAV ──
-    function drawNav(){
-      const nav=$("navList"); nav.innerHTML="";
-      (CR==="Admin"?adminNav:teacherNav).forEach((s,i)=>{
-        const li=document.createElement("li"); li.className="nav-item"; li.textContent=s.l;
-        li.onclick=()=>showPanel(s.p,li); nav.appendChild(li);
-        if(i===0) setTimeout(()=>li.click(),100);
-      });
-    }
+  // 建立每個 day column 的 inner div（用於絕對定位事件）
+  const colInners=days.map(()=>null);
 
-    async function showPanel(p,el){
-      document.querySelectorAll(".section-panel").forEach(x=>x.classList.remove("active"));
-      document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
-      $("panel-"+p)?.classList.add("active"); el?.classList.add("active");
-      if(p==="calendar") renderCalendar();
-      if(p==="schedule" && CR==="Admin") populateTeacherDropdowns();
-      if(p==="attendance") loadTodaySchedules();
-      if(p==="institutes") renderInstitutes();
-      if(p==="rosters") renderRosters();
-      if(p==="salary" && CR==="Admin") populateTeacherDropdowns();
-      if(p==="users") renderUserList();
-    }
-
-    // ── 載入所有使用者 ──
-    async function loadAllUsers(){
-      const snap=await getDocs(collection(db,"users")); allUsers=[]; teacherMap={};
-      snap.forEach(d=>{
-        const u={id:d.id,...d.data()}; allUsers.push(u);
-        teacherMap[d.id]=u.displayName||u.email;
-      });
-      // 填入行事曆篩選
-      const fs=$("filterTeacher"); fs.innerHTML='<option value="all">全部老師</option>';
-      allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;fs.appendChild(o);});
-    }
-
-    function populateTeacherDropdowns(){
-      [$("assignTeacher"),$("salaryTeacherSel"),$("settleTeacherSel")].forEach(sel=>{
-        if(!sel) return;
-        sel.innerHTML='<option value="">-- 選擇老師 --</option>';
-        allUsers.forEach(u=>{const o=document.createElement("option");o.value=u.id;o.textContent=u.displayName||u.email;sel.appendChild(o);});
-      });
-    }
-
-    // ── 新增課程 ──
-    $("scheduleForm").onsubmit=async e=>{
-      e.preventDefault(); if(CR!=="Admin") return;
-      const btn=$("saveScheduleBtn"); btn.disabled=true; btn.textContent="排課中…";
-      const tId=$("assignTeacher").value;
-      const baseStart=new Date($("startAt").value), baseEnd=new Date($("endAt").value);
-      const isRec=$("isRecurring").checked, recEnd=new Date($("recurrenceEndDate").value);
-      const level=$("schoolLevel").value, year=$("gradeYear").value, cls=$("classId").value;
-      const gradeStr=`${level}${year}年級${cls?`（${cls}）`:""}`;
-      try{
-        let s=new Date(baseStart),en=new Date(baseEnd),count=0;
-        const limit=isRec?recEnd:new Date(baseStart);
-        while(s<=limit){
-          await addDoc(collection(db,"schedules"),{
-            date:fmtDate(s), startAt:Timestamp.fromDate(new Date(s)), endAt:Timestamp.fromDate(new Date(en)),
-            teacherId:tId, teacherName:teacherMap[tId]||"",
-            academicPeriod:$("academicPeriod").value,
-            instituteName:$("instituteName").value.trim(),
-            grade:gradeStr, schoolLevel:level, gradeYear:year, classId:cls,
-            expectedStudents:Number($("expectedStudents").value),
-            region:$("region").value.trim(), courseType:$("courseType").value,
-            note:$("scheduleNote").value.trim(), createdAt:Timestamp.now()
-          });
-          if(!isRec) break;
-          s.setDate(s.getDate()+7); en.setDate(en.getDate()+7); count++;
-        }
-        e.target.reset(); $("recurrenceFields").classList.add("hidden");
-        setMsg($("scheduleMsg"),`✓ 成功建立 ${count||1} 堂課程！`,false);
-        renderCalendar();
-      }catch(err){setMsg($("scheduleMsg"),"錯誤："+err.message,true);}
-      finally{btn.disabled=false; btn.textContent="確認新增並排入課表";}
-    };
-
-    // ── 行事曆 ──
-    async function renderCalendar(){
-      const base=new Date($("targetDate").value||fmtDate(new Date()));
-      const days=CM==="day"?[base]:weekDays(base);
-      const filterTid=CR==="Admin"?$("filterTeacher").value:"self";
-      const grid=$("calGrid"); grid.innerHTML="";
-      const cols=days.length+1;
-      grid.style.gridTemplateColumns=`64px repeat(${days.length},1fr)`;
-
-      // header
-      const corner=document.createElement("div"); corner.className="cal-corner"; grid.appendChild(corner);
-      days.forEach(d=>{
-        const h=document.createElement("div"); h.className="cal-day-header";
-        const today=fmtDate(new Date())===fmtDate(d);
-        h.innerHTML=`<span style="${today?"color:var(--gold);font-weight:700":""}">${d.getMonth()+1}/${d.getDate()}<br><span style="font-size:10px">${"日一二三四五六"[d.getDay()]}</span></span>`;
-        grid.appendChild(h);
-      });
-
-      // 撈資料
-      const allEvents=await Promise.all(days.map(d=>getDocs(query(collection(db,"schedules"),where("date","==",fmtDate(d))))));
-
-      // 時間格 7:00~22:00
-      for(let h=7;h<=22;h++){
-        const tc=document.createElement("div"); tc.className="cal-time"; tc.textContent=`${h}:00`; grid.appendChild(tc);
-        days.forEach((_,idx)=>{
-          const cell=document.createElement("div"); cell.className="cal-cell";
-          allEvents[idx].forEach(d=>{
-            const ev=d.data(); if(ev.startAt.toDate().getHours()!==h) return;
-            if(filterTid==="self" || filterTid==="all" || filterTid===ev.teacherId){
-              if(CR!=="Admin" && ev.teacherId!==CU.uid) return;
-            } else { if(ev.teacherId!==filterTid) return; }
-            const pill=document.createElement("div"); pill.className="event-pill";
-            pill.innerHTML=`<div class="event-ins">${ev.instituteName||"-"}</div><div class="event-time">${hhmm(ev.startAt.toDate())}–${hhmm(ev.endAt.toDate())}</div><div class="event-grade">${ev.grade||""}</div>${CR==="Admin"?`<div class="event-teacher">👤 ${ev.teacherName||"未指派"}</div>`:""}`;
-            pill.onclick=()=>openEventDetail(ev,d.id);
-            cell.appendChild(pill);
-          });
-          grid.appendChild(cell);
-        });
+  // 先畫時間格
+  HOURS.forEach((h,hi)=>{
+    const tr=document.createElement("tr"); tr.className="cal-row";
+    const td0=document.createElement("td"); td0.className="cal-time-col"; td0.textContent=`${String(h).padStart(2,"0")}:00`; tr.appendChild(td0);
+    days.forEach((_,di)=>{
+      const td=document.createElement("td"); td.className="cal-day-col";
+      td.style.height=ROW_H+"px";
+      if(hi===0){
+        // 第一行時建立 inner div（設總高度）
+        const totalH=ROW_H*HOURS.length;
+        const inner=document.createElement("div"); inner.className="day-col-inner"; inner.style.cssText=`height:${totalH}px;position:relative;`;
+        td.rowSpan=HOURS.length; td.style.height=totalH+"px"; td.style.padding="0"; td.appendChild(inner);
+        colInners[di]=inner;
       }
+      tr.appendChild(td);
+    });
+    // 只有第一行的 td 需要 rowSpan，其他行不加 td（已由 rowSpan 佔用）
+    if(hi>0){
+      // 移除多餘的 td（只保留時間列）
+      while(tr.children.length>1) tr.removeChild(tr.lastChild);
     }
+    body.appendChild(tr);
+  });
 
-    // 課程詳細
-    window.openEventDetail=(ev,docId)=>{
-      $("eventDetailContent").innerHTML=`
-        <div class="gold-title text-base mb-3">${ev.instituteName||"-"}</div>
-        <div class="grid grid-cols-2 gap-2 text-xs" style="color:var(--muted)">
-          <div>時間</div><div style="color:var(--text)">${hhmm(ev.startAt.toDate())} – ${hhmm(ev.endAt.toDate())}</div>
-          <div>日期</div><div style="color:var(--text)">${ev.date||"-"}</div>
-          <div>學期</div><div style="color:var(--text)">${ev.academicPeriod||"-"}</div>
-          <div>地區</div><div style="color:var(--text)">${ev.region||"-"}</div>
-          <div>年級</div><div style="color:var(--text)">${ev.grade||"-"}</div>
-          <div>人數</div><div style="color:var(--text)">${ev.expectedStudents||"-"} 人</div>
-          <div>類型</div><div style="color:var(--text)">${ev.courseType||"-"}</div>
-          ${CR==="Admin"?`<div>老師</div><div style="color:#86efac">${ev.teacherName||"-"}</div>`:""}
-          ${ev.note?`<div>備註</div><div style="color:var(--text)">${ev.note}</div>`:""}
-        </div>
-        <button onclick="openInsDetail('${ev.instituteName}')" class="btn mt-4 w-full" style="background:rgba(201,168,76,0.15);border:1px solid var(--gold-dim);color:var(--gold);font-size:13px">查看補習班詳細資料 →</button>
-        ${CR==="Admin"&&docId?`<button onclick="deleteSchedule('${docId}')" class="btn mt-2 w-full" style="background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);font-size:13px">刪除此課程</button>`:""}
+  // 放入事件
+  dayEvents.forEach((evs,di)=>{
+    const inner=colInners[di]; if(!inner)return;
+    evs.forEach(ev=>{
+      const st=ev.startAt.toDate(), et=ev.endAt.toDate();
+      const startMin=(st.getHours()-CAL_START)*60+st.getMinutes();
+      const durMin=(et-st)/60000;
+      const topPx=(startMin/60)*ROW_H;
+      const heightPx=Math.max((durMin/60)*ROW_H,28);
+
+      const block=document.createElement("div");
+      block.className=`ev-block status-${ev.status||"scheduled"}`;
+      block.style.cssText=`top:${topPx}px;height:${heightPx}px;`;
+
+      const statusLabel={scheduled:"",checkedin:"✓到班",absent:"請假",rescheduled:"調課",cancelled:"停課"}[ev.status||"scheduled"];
+      block.innerHTML=`
+        <div class="ev-ins">${ev.instituteName||"-"}</div>
+        <div class="ev-time">${hhmm(st)}–${hhmm(et)}</div>
+        <div class="ev-grade">${ev.grade||""}</div>
+        ${CR==="Admin"?`<div class="ev-teacher">👤${ev.teacherName||""}</div>`:""}
+        ${statusLabel?`<div class="ev-status" style="color:${ev.status==="checkedin"?"#6ee7b7":ev.status==="absent"?"#fca5a5":ev.status==="cancelled"?"#9ca3af":"#a5b4fc"}">${statusLabel}</div>`:""}
       `;
-      $("eventDetailModal").classList.remove("hidden");
-    };
+      block.onclick=()=>openEventModal(ev.id,ev);
+      inner.appendChild(block);
+    });
+  });
+}
 
-    window.deleteSchedule=async(docId)=>{
-      if(!confirm("確認刪除此課程？此操作無法復原。")) return;
-      await deleteDoc(doc(db,"schedules",docId));
-      $("eventDetailModal").classList.add("hidden");
-      renderCalendar();
-    };
+// ── 課程操作 Modal ──
+function openEventModal(docId,ev){
+  currentEventDocId=docId; currentEventData=ev;
+  $("eventModalTitle").textContent=ev.instituteName||"-";
+  $("eventModalSub").textContent=`${ev.date} ${hhmm(ev.startAt.toDate())}–${hhmm(ev.endAt.toDate())} | ${ev.grade||""}`;
+  const statusMap={scheduled:"待上課",checkedin:"✓ 已到班",absent:"請假",rescheduled:"調課",cancelled:"停課"};
+  const colorMap={scheduled:"var(--gold)",checkedin:"#6ee7b7",absent:"#fca5a5",rescheduled:"#a5b4fc",cancelled:"#9ca3af"};
+  const st=ev.status||"scheduled";
+  $("eventModalStatus").textContent=statusMap[st]||st;
+  $("eventModalStatus").style.color=colorMap[st]||"var(--text)";
 
-    // 補習班詳細
-    window.openInsDetail=async n=>{
-      $("eventDetailModal").classList.add("hidden");
-      const snap=await getDocs(query(collection(db,"institutes"),where("name","==",n)));
-      if(snap.empty){$("insDetailContent").innerHTML=`<div class="gold-title mb-2">${n}</div><p style="color:var(--muted);font-size:13px">尚無補習班詳細資料</p>`;}
-      else{
-        const i=snap.docs[0].data();
-        $("insDetailContent").innerHTML=`
-          <div class="gold-title text-base mb-3">${i.name}</div>
-          <div class="grid grid-cols-2 gap-2 text-xs" style="color:var(--muted)">
-            <div>負責人</div><div style="color:var(--text)">${i.ownerName||"-"}</div>
-            <div>主任聯絡</div><div style="color:var(--text)">${i.directorContact||"-"}</div>
-            <div>LINE</div><div style="color:var(--text)">${i.lineAccount||"-"}</div>
-            <div>地址</div><div style="color:var(--text)">${i.address||"-"}</div>
-            <div>電話</div><div style="color:var(--text)">${i.phone||"-"}</div>
-            <div>影印機密碼</div><div style="color:var(--text)">${i.copierPassword||"-"}</div>
-            <div>停車規定</div><div style="color:var(--text)">${i.parkingRule||"-"}</div>
-            ${i.note?`<div>備註</div><div style="color:var(--text)">${i.note}</div>`:""}
-          </div>`;
-      }
-      $("insDetailModal").classList.remove("hidden");
-    };
+  // 到班打卡區
+  const canCheckIn=CR==="Teacher"&&(st==="scheduled"||st==="rescheduled");
+  $("checkInArea").classList.toggle("hidden",!canCheckIn);
+  $("ciMsg").textContent="";
 
-    // ── 打卡 ──
-    async function loadTodaySchedules(){
-      const snap=await getDocs(query(collection(db,"schedules"),where("date","==",fmtDate(new Date()))));
-      const s=$("attendanceSchedule"); s.innerHTML='<option value="">-- 選擇課表 --</option>'; todaySchedules=[];
-      snap.forEach(d=>{
-        const ev=d.data(); if(CR!=="Admin" && ev.teacherId!==CU.uid) return;
-        const o=document.createElement("option"); o.value=d.id;
-        o.textContent=`${ev.instituteName} ${ev.grade} ${hhmm(ev.startAt.toDate())}`; s.appendChild(o);
-        todaySchedules.push({id:d.id,...ev});
-      });
-    }
-    $("reloadSchedules").onclick=loadTodaySchedules;
+  // 操作按鈕
+  const ab=$("actionBtns"); ab.innerHTML="";
+  const actions=[];
+  if(CR==="Admin"){
+    if(st!=="cancelled") actions.push({label:"🚫 停課",color:"rgba(127,29,29,.5)",fn:()=>updateStatus("cancelled")});
+    if(st!=="absent") actions.push({label:"🙏 請假",color:"rgba(100,60,160,.5)",fn:()=>updateStatus("absent")});
+    if(st==="cancelled"||st==="absent") actions.push({label:"↩ 恢復",color:"rgba(15,118,110,.5)",fn:()=>updateStatus("scheduled")});
+    actions.push({label:"🗑 刪除課程",color:"rgba(192,57,43,.4)",fn:()=>deleteEvent()});
+    actions.push({label:"📅 調課",color:"rgba(55,48,163,.5)",fn:()=>$("rescheduleArea").classList.toggle("hidden")});
+  } else {
+    // 教師可請假
+    if(st==="scheduled"||st==="rescheduled") actions.push({label:"🙏 請假",color:"rgba(100,60,160,.5)",fn:()=>updateStatus("absent")});
+  }
+  actions.forEach(a=>{
+    const b=document.createElement("button"); b.className="btn"; b.style.background=a.color; b.textContent=a.label;
+    b.onclick=a.fn; ab.appendChild(b);
+  });
 
-    $("checkInForm").onsubmit=async e=>{
-      e.preventDefault();
-      const sch=todaySchedules.find(s=>s.id===$("attendanceSchedule").value);
-      if(!sch) return setMsg($("attendanceMsg"),"請先選擇課表",true);
-      const file=$("checkInPhoto").files[0]; if(!file) return;
-      try{
-        const photo=await uploadPhoto(file,`checkin/${CU.uid}/${Date.now()}`);
-        await setDoc(doc(db,"attendanceRecords",sch.id),{scheduleId:sch.id,teacherId:CU.uid,instituteName:sch.instituteName,checkInAt:Timestamp.now(),checkInPhotoUrl:photo,status:"checked_in",updatedAt:Timestamp.now()},{merge:true});
-        setMsg($("attendanceMsg"),"✓ 上課打卡成功",false); e.target.reset();
-      }catch(err){setMsg($("attendanceMsg"),err.message,true);}
-    };
+  $("rescheduleArea").classList.add("hidden"); $("rsMsg").textContent="";
+  $("rsStart").value=""; $("rsEnd").value="";
+  $("eventModal").classList.remove("hidden");
+}
 
-    $("checkOutForm").onsubmit=async e=>{
-      e.preventDefault();
-      const sch=todaySchedules.find(s=>s.id===$("attendanceSchedule").value);
-      if(!sch) return setMsg($("attendanceMsg"),"請先選擇課表",true);
-      const file=$("checkOutPhoto").files[0]; if(!file) return;
-      try{
-        const photo=await uploadPhoto(file,`checkout/${CU.uid}/${Date.now()}`);
-        await setDoc(doc(db,"attendanceRecords",sch.id),{checkOutAt:Timestamp.now(),checkOutPhotoUrl:photo,status:"checked_out",updatedAt:Timestamp.now()},{merge:true});
-        await addDoc(collection(db,"classLogs"),{scheduleId:sch.id,teacherId:CU.uid,instituteName:sch.instituteName,teachingProgress:$("teachingProgress").value,testScope:$("testScope").value,scoreRange:$("scoreRange").value,homework:$("homework").value,examPaperUsed:{paperCode:$("examPaperCode").value},createdAt:Timestamp.now()});
-        setMsg($("attendanceMsg"),"✓ 下課打卡與日誌已提交",false); e.target.reset();
-      }catch(err){setMsg($("attendanceMsg"),err.message,true);}
-    };
+// 到班打卡
+$("ciBtn").onclick=async()=>{
+  const file=$("ciPhoto").files[0]; if(!file){$("ciMsg").textContent="請選擇照片";return;}
+  $("ciBtn").disabled=true; $("ciBtn").textContent="上傳中…";
+  try{
+    const url=await uploadPhoto(file,`checkin/${CU.uid}/${currentEventDocId}_${Date.now()}`);
+    await updateDoc(doc(db,"schedules",currentEventDocId),{status:"checkedin",checkInAt:Timestamp.now(),checkInPhotoUrl:url,checkInTeacherId:CU.uid,updatedAt:Timestamp.now()});
+    $("ciMsg").className="msg-ok"; $("ciMsg").textContent="✓ 到班打卡成功！";
+    currentEventData.status="checkedin";
+    $("eventModalStatus").textContent="✓ 已到班"; $("eventModalStatus").style.color="#6ee7b7";
+    $("checkInArea").classList.add("hidden");
+    setTimeout(()=>{$("eventModal").classList.add("hidden");renderCalendar();},1200);
+  }catch(e){$("ciMsg").className="msg-err";$("ciMsg").textContent=e.message;}
+  finally{$("ciBtn").disabled=false;$("ciBtn").textContent="確認到班打卡";}
+};
 
-    // ── 補習班 ──
-    $("instituteForm").onsubmit=async e=>{
-      e.preventDefault();
-      await addDoc(collection(db,"institutes"),{name:$("insName").value.trim(),ownerName:$("insOwner").value.trim(),directorContact:$("insDirectorContact").value.trim(),lineAccount:$("insLine").value.trim(),copierPassword:$("insCopier").value.trim(),parkingRule:$("insParking").value.trim(),address:$("insAddress").value.trim(),phone:$("insPhone").value.trim(),note:$("insNote").value.trim(),createdAt:Timestamp.now()});
-      e.target.reset(); renderInstitutes();
-    };
-    async function renderInstitutes(){
-      const c=$("instituteCards"); c.innerHTML="";
-      const snap=await getDocs(collection(db,"institutes"));
-      snap.forEach(d=>{
-        const i=d.data(), div=document.createElement("div"); div.className="ins-card";
-        div.innerHTML=`<div style="color:var(--gold);font-weight:700;margin-bottom:6px">${i.name}</div><div style="font-size:12px;color:var(--muted);line-height:1.8">負責人：${i.ownerName||"-"}<br>主任：${i.directorContact||"-"}<br>電話：${i.phone||"-"}</div>`;
-        div.onclick=()=>openInsDetail(i.name); c.appendChild(div);
-      });
-    }
+async function updateStatus(newStatus){
+  if(!confirm(`確認將此課程狀態改為「${{scheduled:"待上課",absent:"請假",cancelled:"停課",rescheduled:"調課"}[newStatus]}」？`))return;
+  await updateDoc(doc(db,"schedules",currentEventDocId),{status:newStatus,updatedAt:Timestamp.now()});
+  $("eventModal").classList.add("hidden"); renderCalendar();
+}
 
-    // ── 名冊 ──
-    $("addRT").onclick=async()=>{
-      if(!$("rtName").value) return;
-      await addDoc(collection(db,"reserveTeachers"),{name:$("rtName").value,phone:$("rtPhone").value,subject:$("rtSubject").value,note:$("rtNote").value,createdAt:Timestamp.now()});
-      $("rtName").value=$("rtPhone").value=$("rtSubject").value=$("rtNote").value="";
-      renderRosters();
-    };
-    $("addVD").onclick=async()=>{
-      if(!$("vdName").value) return;
-      await addDoc(collection(db,"vendors"),{name:$("vdName").value,service:$("vdService").value,contact:$("vdContact").value,phone:$("vdPhone").value,createdAt:Timestamp.now()});
-      $("vdName").value=$("vdService").value=$("vdContact").value=$("vdPhone").value="";
-      renderRosters();
-    };
-    async function renderRosters(){
-      const rl=$("rtList"), vl=$("vdList"); rl.innerHTML=vl.innerHTML="";
-      const rs=await getDocs(collection(db,"reserveTeachers")), vs=await getDocs(collection(db,"vendors"));
-      if(rs.empty) rl.innerHTML=`<div class="roster-row" style="color:var(--muted)">尚無資料</div>`;
-      rs.forEach(d=>{
-        const x=d.data(), row=document.createElement("div"); row.className="roster-row";
-        row.innerHTML=`<div><div style="color:var(--text)">${x.name}</div><div style="font-size:11px;color:var(--muted)">${x.subject||""} ${x.phone||""}</div></div><button onclick="deleteRoster('reserveTeachers','${d.id}',this)" class="btn" style="background:rgba(192,57,43,0.3);font-size:11px;padding:4px 8px">刪除</button>`;
-        rl.appendChild(row);
-      });
-      if(vs.empty) vl.innerHTML=`<div class="roster-row" style="color:var(--muted)">尚無資料</div>`;
-      vs.forEach(d=>{
-        const x=d.data(), row=document.createElement("div"); row.className="roster-row";
-        row.innerHTML=`<div><div style="color:var(--text)">${x.name}</div><div style="font-size:11px;color:var(--muted)">${x.service||""} ${x.phone||""}</div></div><button onclick="deleteRoster('vendors','${d.id}',this)" class="btn" style="background:rgba(192,57,43,0.3);font-size:11px;padding:4px 8px">刪除</button>`;
-        vl.appendChild(row);
-      });
-    }
-    window.deleteRoster=async(col,id)=>{if(confirm("確認刪除？")) await deleteDoc(doc(db,col,id)); renderRosters();};
+async function deleteEvent(){
+  if(!confirm("確認刪除此課程？無法復原。"))return;
+  await deleteDoc(doc(db,"schedules",currentEventDocId));
+  $("eventModal").classList.add("hidden"); renderCalendar();
+}
 
-    // ── 薪資 ──
-    $("salaryConfigForm").onsubmit=async e=>{
-      e.preventDefault(); if(CR!=="Admin") return;
-      const tid=$("salaryTeacherSel").value; if(!tid) return;
-      await setDoc(doc(db,"salaryConfigs",tid),{teacherId:tid,baseHourlyRate:Number($("baseRate").value),studentBonusRule:{threshold:Number($("bonusThreshold").value),bonusPerExtraStudent:Number($("bonusPerStudent").value)},updatedBy:CU.uid,updatedAt:Timestamp.now()},{merge:true});
-      alert("薪資參數已儲存");
-    };
-    $("salaryCalcForm").onsubmit=async e=>{
-      e.preventDefault(); if(CR!=="Admin") return;
-      const tid=$("settleTeacherSel").value, month=$("settleMonth").value; if(!tid||!month) return;
-      const cfgSnap=await getDoc(doc(db,"salaryConfigs",tid));
-      if(!cfgSnap.exists()){$("salaryResult").style.display="block";$("salaryResult").textContent="找不到薪資參數";return;}
-      const cfg=cfgSnap.data();
-      const attSnap=await getDocs(query(collection(db,"attendanceRecords"),where("teacherId","==",tid)));
-      let totalHours=0,bonus=0;
-      attSnap.forEach(d=>{const a=d.data();if(!a.checkInAt||!a.checkOutAt)return;const dm=a.checkInAt.toDate(),rm=`${dm.getFullYear()}-${String(dm.getMonth()+1).padStart(2,"0")}`;if(rm!==month)return;totalHours+=Math.max(0,(a.checkOutAt.toDate()-a.checkInAt.toDate())/3600000);});
-      const basePay=totalHours*(cfg.baseHourlyRate||0), grand=basePay+bonus;
-      $("salaryResult").style.display="block";
-      $("salaryResult").innerHTML=`${teacherMap[tid]||tid}｜${month}｜時數：${totalHours.toFixed(1)}h｜底薪：NT$ ${Math.round(basePay).toLocaleString()}｜合計：NT$ ${Math.round(grand).toLocaleString()}`;
-    };
+// 調課
+$("rsBtn").onclick=async()=>{
+  const ns=new Date($("rsStart").value), ne=new Date($("rsEnd").value);
+  if(isNaN(ns)||isNaN(ne)||ne<=ns){$("rsMsg").className="msg-err";$("rsMsg").textContent="時間格式錯誤";return;}
+  await updateDoc(doc(db,"schedules",currentEventDocId),{
+    date:fmtDate(ns), startAt:Timestamp.fromDate(ns), endAt:Timestamp.fromDate(ne),
+    status:"rescheduled", rescheduleNote:$("rsNote").value.trim(), updatedAt:Timestamp.now()
+  });
+  $("rsMsg").className="msg-ok"; $("rsMsg").textContent="✓ 調課完成";
+  setTimeout(()=>{$("eventModal").classList.add("hidden");renderCalendar();},1000);
+};
 
-    // ── 使用者管理 ──
-    $("openAddUserBtn").onclick=()=>{$("addUserModal").classList.remove("hidden");$("addUserMsg").textContent="";$("newUserName").value="";$("newUserEmail").value="";$("newUserPassword").value="0000";};
-    $("confirmAddUserBtn").onclick=async()=>{
-      const name=$("newUserName").value.trim(),email=$("newUserEmail").value.trim(),password=$("newUserPassword").value,role=$("newUserRole").value;
-      if(!email||!password){setMsg($("addUserMsg"),"請填寫 Email 和密碼",true);return;}
-      $("confirmAddUserBtn").disabled=true; $("confirmAddUserBtn").textContent="建立中…";
-      try{
-        const res=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FC.apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
-        const data=await res.json(); if(data.error) throw new Error(data.error.message);
-        if(name) await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${FC.apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({idToken:data.idToken,displayName:name})});
-        await setDoc(doc(db,"users",data.localId),{displayName:name,email,role,isSuperAdmin:role==="Admin",status:"active",createdAt:Timestamp.now(),updatedAt:Timestamp.now()});
-        setMsg($("addUserMsg"),`✓ ${name||email} 建立成功`,false);
-        await loadAllUsers();
-        setTimeout(()=>{$("addUserModal").classList.add("hidden");renderUserList();},1200);
-      }catch(err){setMsg($("addUserMsg"),"建立失敗："+err.message,true);}
-      finally{$("confirmAddUserBtn").disabled=false;$("confirmAddUserBtn").textContent="確認新增";}
-    };
+// ── 補習班詳細 ──
+window.openInsDetail=async n=>{
+  const snap=await getDocs(query(collection(db,"institutes"),where("name","==",n)));
+  if(snap.empty){$("insDetailContent").innerHTML=`<div class="gold-title mb-2">${n}</div><p style="color:var(--muted)">尚無詳細資料</p>`;}
+  else{
+    const i=snap.docs[0].data();
+    $("insDetailContent").innerHTML=`
+      <div class="gold-title text-base mb-3">${i.name}</div>
+      <div class="grid grid-cols-2 gap-2 text-xs" style="color:var(--muted)">
+        <div>負責人</div><div style="color:var(--text)">${i.ownerName||"-"}</div>
+        <div>主任聯絡</div><div style="color:var(--text)">${i.directorContact||"-"}</div>
+        <div>LINE</div><div style="color:var(--text)">${i.lineAccount||"-"}</div>
+        <div>地址</div><div style="color:var(--text)">${i.address||"-"}</div>
+        <div>電話</div><div style="color:var(--text)">${i.phone||"-"}</div>
+        <div>影印機密碼</div><div style="color:var(--text)">${i.copierPassword||"-"}</div>
+        <div>停車規定</div><div style="color:var(--text)">${i.parkingRule||"-"}</div>
+        ${i.note?`<div>備註</div><div style="color:var(--text)">${i.note}</div>`:""}
+      </div>`;
+  }
+  $("insDetailModal").classList.remove("hidden");
+};
 
-    $("confirmEditUserBtn").onclick=async()=>{
-      const id=$("editUserId").value,name=$("editUserName").value.trim(),role=$("editUserRole").value,status=$("editUserStatus").value;
-      await updateDoc(doc(db,"users",id),{displayName:name,role,status,updatedAt:Timestamp.now()});
-      setMsg($("editUserMsg"),"✓ 已更新",false);
-      await loadAllUsers(); setTimeout(()=>{$("editUserModal").classList.add("hidden");renderUserList();},1000);
-    };
+// ── 補習班 CRUD ──
+$("instituteForm").onsubmit=async e=>{
+  e.preventDefault();
+  await addDoc(collection(db,"institutes"),{name:$("insName").value.trim(),ownerName:$("insOwner").value.trim(),directorContact:$("insDirectorContact").value.trim(),lineAccount:$("insLine").value.trim(),copierPassword:$("insCopier").value.trim(),parkingRule:$("insParking").value.trim(),address:$("insAddress").value.trim(),phone:$("insPhone").value.trim(),note:$("insNote").value.trim(),createdAt:Timestamp.now()});
+  e.target.reset(); renderInstitutes();
+};
+async function renderInstitutes(){
+  const c=$("instituteCards"); c.innerHTML="";
+  const snap=await getDocs(collection(db,"institutes"));
+  snap.forEach(d=>{
+    const i=d.data(), div=document.createElement("div"); div.className="ins-card";
+    div.innerHTML=`<div style="color:var(--gold);font-weight:700;margin-bottom:6px">${i.name}</div><div style="font-size:12px;color:var(--muted);line-height:1.8">負責人：${i.ownerName||"-"}<br>主任：${i.directorContact||"-"}<br>電話：${i.phone||"-"}</div>`;
+    div.onclick=()=>openInsDetail(i.name); c.appendChild(div);
+  });
+}
 
-    async function renderUserList(){
-      const c=$("userList"); c.innerHTML="";
-      allUsers.forEach(u=>{
-        const row=document.createElement("div"); row.className="user-card";
-        const isSelf=u.id===CU.uid;
-        row.innerHTML=`
-          <div style="flex:1;min-width:0">
-            <div style="font-size:13px;color:var(--text)">${u.displayName||"-"}</div>
-            <div style="font-size:11px;color:var(--muted)">${u.email||""}</div>
-          </div>
-          <span class="badge ${u.role==="Admin"?"badge-admin":"badge-teacher"}">${u.role}</span>
-          <span style="font-size:11px;color:${u.status==="disabled"?"#fca5a5":"#6ee7b7"}">${u.status==="disabled"?"停權":"正常"}</span>
-          <button onclick="openEditUser('${u.id}')" class="btn" style="background:var(--panel-2);font-size:11px;padding:5px 10px;flex-shrink:0">編輯</button>
-          ${!isSelf?`<button onclick="confirmDeleteUser('${u.id}','${u.displayName||u.email}')" class="btn" style="background:rgba(192,57,43,0.3);font-size:11px;padding:5px 10px;flex-shrink:0">刪除</button>`:"<div style='width:52px'></div>"}
-        `;
-        c.appendChild(row);
-      });
-    }
+// ── 名冊 ──
+$("addRT").onclick=async()=>{
+  if(!$("rtName").value)return;
+  await addDoc(collection(db,"reserveTeachers"),{name:$("rtName").value,phone:$("rtPhone").value,subject:$("rtSubject").value,note:$("rtNote").value,createdAt:Timestamp.now()});
+  $("rtName").value=$("rtPhone").value=$("rtSubject").value=$("rtNote").value=""; renderRosters();
+};
+$("addVD").onclick=async()=>{
+  if(!$("vdName").value)return;
+  await addDoc(collection(db,"vendors"),{name:$("vdName").value,service:$("vdService").value,contact:$("vdContact").value,phone:$("vdPhone").value,createdAt:Timestamp.now()});
+  $("vdName").value=$("vdService").value=$("vdContact").value=$("vdPhone").value=""; renderRosters();
+};
+async function renderRosters(){
+  const rl=$("rtList"),vl=$("vdList"); rl.innerHTML=vl.innerHTML="";
+  const rs=await getDocs(collection(db,"reserveTeachers")),vs=await getDocs(collection(db,"vendors"));
+  if(rs.empty) rl.innerHTML=`<div class="roster-row" style="color:var(--muted)">尚無資料</div>`;
+  rs.forEach(d=>{const x=d.data(),row=document.createElement("div");row.className="roster-row";row.innerHTML=`<div><div style="color:var(--text)">${x.name}</div><div style="font-size:11px;color:var(--muted)">${x.subject||""} ${x.phone||""}</div></div><button onclick="deleteRoster('reserveTeachers','${d.id}')" class="btn btn-red" style="font-size:11px;padding:4px 8px">刪除</button>`;rl.appendChild(row);});
+  if(vs.empty) vl.innerHTML=`<div class="roster-row" style="color:var(--muted)">尚無資料</div>`;
+  vs.forEach(d=>{const x=d.data(),row=document.createElement("div");row.className="roster-row";row.innerHTML=`<div><div style="color:var(--text)">${x.name}</div><div style="font-size:11px;color:var(--muted)">${x.service||""} ${x.phone||""}</div></div><button onclick="deleteRoster('vendors','${d.id}')" class="btn btn-red" style="font-size:11px;padding:4px 8px">刪除</button>`;vl.appendChild(row);});
+}
+window.deleteRoster=async(col,id)=>{if(confirm("確認刪除？"))await deleteDoc(doc(db,col,id));renderRosters();};
 
-    window.openEditUser=uid=>{
-      const u=allUsers.find(x=>x.id===uid); if(!u) return;
-      $("editUserId").value=uid; $("editUserName").value=u.displayName||""; $("editUserRole").value=u.role||"Teacher"; $("editUserStatus").value=u.status||"active";
-      $("editUserMsg").textContent=""; $("editUserModal").classList.remove("hidden");
-    };
-    window.confirmDeleteUser=async(uid,name)=>{
-      if(!confirm(`確認刪除帳號「${name}」？此操作無法復原。`)) return;
-      await deleteDoc(doc(db,"users",uid)); await loadAllUsers(); renderUserList();
-    };
+// ── 薪資結算 ──
+$("calcAllBtn").onclick=()=>renderSalaryPanel();
+async function renderSalaryPanel(){
+  const month=$("settleMonth").value; if(!month) return;
+  const c=$("salaryResult"); c.innerHTML=`<div style="text-align:center;color:var(--muted);font-size:13px">計算中…</div>`;
 
-    // ── 工具函式 ──
-    async function uploadPhoto(file,path){const r=ref(storage,path);await uploadBytes(r,file,{contentType:file.type||"image/jpeg"});return getDownloadURL(r);}
-    function setMode(m){CM=m;$("dayBtn").style.background=m==="day"?"var(--gold-dim)":"var(--panel-2)";$("weekBtn").style.background=m==="week"?"var(--gold-dim)":"var(--panel)";renderCalendar();}
-    function setMsg(el,txt,isErr){el.className=isErr?"msg-err":"msg-ok";el.textContent=txt;}
-    function weekDays(d){const day=d.getDay(),diff=day===0?-6:1-day,mon=new Date(d);mon.setDate(d.getDate()+diff);return Array.from({length:7},(_,i)=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return x;});}
-    function fmtDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-    function hhmm(d){return d.toTimeString().slice(0,5);}
-  </script>
+  // 撈該月所有 schedules（已到班）
+  const snap=await getDocs(collection(db,"schedules"));
+  const monthlyData={}; // teacherId -> {classes, teacherPay, teacherName}
+  const instituteData={}; // instituteName -> {classes, revenue}
+
+  snap.forEach(d=>{
+    const ev=d.data();
+    if(ev.status!=="checkedin") return;
+    if(!ev.checkInAt) return;
+    const dm=ev.checkInAt.toDate();
+    const rm=`${dm.getFullYear()}-${String(dm.getMonth()+1).padStart(2,"0")}`;
+    if(rm!==month) return;
+
+    // 老師薪資
+    const tid=ev.teacherId||"unknown";
+    if(!monthlyData[tid]) monthlyData[tid]={classes:0,teacherPay:0,teacherName:ev.teacherName||tid};
+    monthlyData[tid].classes++;
+    monthlyData[tid].teacherPay+=Number(ev.teacherFeePerClass||0);
+
+    // 補習班收入
+    const ins=ev.instituteName||"未知";
+    if(!instituteData[ins]) instituteData[ins]={classes:0,revenue:0};
+    instituteData[ins].classes++;
+    instituteData[ins].revenue+=Number(ev.instituteRevenuePerClass||0);
+  });
+
+  c.innerHTML="";
+
+  // 老師薪資卡
+  const teacherKeys=Object.keys(monthlyData);
+  if(teacherKeys.length===0){
+    c.innerHTML=`<div style="text-align:center;color:var(--muted);font-size:13px">${month} 無已到班課程記錄</div>`; return;
+  }
+
+  const teacherSection=document.createElement("div");
+  teacherSection.innerHTML=`<div class="gold-title text-sm mb-3">👤 老師薪資</div>`;
+  const tGrid=document.createElement("div"); tGrid.className="grid md:grid-cols-2 gap-3 mb-4";
+  teacherKeys.forEach(tid=>{
+    const d=monthlyData[tid], card=document.createElement("div"); card.className="salary-card";
+    card.innerHTML=`<div style="font-weight:700;margin-bottom:8px;color:var(--gold-light)">${d.teacherName}</div><div style="font-size:12px;color:var(--muted)">上課堂數：<span style="color:var(--text)">${d.classes} 堂</span></div><div style="font-size:12px;color:var(--muted);margin-top:4px">應付薪資：<span class="salary-num">NT$ ${d.teacherPay.toLocaleString()}</span></div>`;
+    tGrid.appendChild(card);
+  });
+  teacherSection.appendChild(tGrid);
+  c.appendChild(teacherSection);
+
+  // 補習班收入卡
+  const insSection=document.createElement("div");
+  insSection.innerHTML=`<div class="gold-title text-sm mb-3">🏫 補習班收入</div>`;
+  const iGrid=document.createElement("div"); iGrid.className="grid md:grid-cols-2 gap-3";
+  Object.entries(instituteData).forEach(([name,d])=>{
+    const card=document.createElement("div"); card.className="salary-card";
+    card.innerHTML=`<div style="font-weight:700;margin-bottom:8px;color:var(--gold-light)">${name}</div><div style="font-size:12px;color:var(--muted)">上課堂數：<span style="color:var(--text)">${d.classes} 堂</span></div><div style="font-size:12px;color:var(--muted);margin-top:4px">當月收入：<span class="salary-num">NT$ ${d.revenue.toLocaleString()}</span></div>`;
+    iGrid.appendChild(card);
+  });
+  insSection.appendChild(iGrid);
+  c.appendChild(insSection);
+}
+
+// ── 使用者管理 ──
+$("openAddUserBtn").onclick=()=>{$("addUserModal").classList.remove("hidden");$("addUserMsg").textContent="";$("newUserName").value="";$("newUserEmail").value="";$("newUserPassword").value="0000";};
+$("confirmAddUserBtn").onclick=async()=>{
+  const name=$("newUserName").value.trim(),email=$("newUserEmail").value.trim(),password=$("newUserPassword").value,role=$("newUserRole").value;
+  if(!email||!password){setMsg($("addUserMsg"),"請填寫 Email 和密碼",true);return;}
+  $("confirmAddUserBtn").disabled=true; $("confirmAddUserBtn").textContent="建立中…";
+  try{
+    const res=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FC.apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
+    const data=await res.json(); if(data.error) throw new Error(data.error.message);
+    if(name) await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${FC.apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({idToken:data.idToken,displayName:name})});
+    await setDoc(doc(db,"users",data.localId),{displayName:name,email,role,isSuperAdmin:role==="Admin",status:"active",createdAt:Timestamp.now(),updatedAt:Timestamp.now()});
+    setMsg($("addUserMsg"),`✓ ${name||email} 建立成功`,false);
+    await loadAllUsers();
+    setTimeout(()=>{$("addUserModal").classList.add("hidden");renderUserList();},1200);
+  }catch(e){setMsg($("addUserMsg"),"建立失敗："+e.message,true);}
+  finally{$("confirmAddUserBtn").disabled=false;$("confirmAddUserBtn").textContent="確認新增";}
+};
+
+$("confirmEditUserBtn").onclick=async()=>{
+  const id=$("editUserId").value,name=$("editUserName").value.trim(),role=$("editUserRole").value,status=$("editUserStatus").value;
+  await updateDoc(doc(db,"users",id),{displayName:name,role,status,updatedAt:Timestamp.now()});
+  setMsg($("editUserMsg"),"✓ 已更新",false);
+  await loadAllUsers(); setTimeout(()=>{$("editUserModal").classList.add("hidden");renderUserList();},1000);
+};
+
+async function renderUserList(){
+  const c=$("userList"); c.innerHTML="";
+  allUsers.forEach(u=>{
+    const row=document.createElement("div"); row.className="user-card";
+    const isSelf=u.id===CU.uid;
+    row.innerHTML=`
+      <div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--text)">${u.displayName||"-"}</div><div style="font-size:11px;color:var(--muted)">${u.email||""}</div></div>
+      <span class="badge ${u.role==="Admin"?"badge-admin":"badge-teacher"}">${u.role}</span>
+      <span style="font-size:11px;color:${u.status==="disabled"?"#fca5a5":"#6ee7b7"}">${u.status==="disabled"?"停權":"正常"}</span>
+      <button onclick="openEditUser('${u.id}')" class="btn" style="background:var(--panel-2);font-size:11px;padding:5px 10px;flex-shrink:0">編輯</button>
+      ${!isSelf?`<button onclick="confirmDeleteUser('${u.id}','${u.displayName||u.email}')" class="btn btn-red" style="font-size:11px;padding:5px 10px;flex-shrink:0">刪除</button>`:""}
+    `;
+    c.appendChild(row);
+  });
+}
+window.openEditUser=uid=>{
+  const u=allUsers.find(x=>x.id===uid); if(!u) return;
+  $("editUserId").value=uid; $("editUserName").value=u.displayName||""; $("editUserRole").value=u.role||"Teacher"; $("editUserStatus").value=u.status||"active";
+  $("editUserMsg").textContent=""; $("editUserModal").classList.remove("hidden");
+};
+window.confirmDeleteUser=async(uid,name)=>{
+  if(!confirm(`確認刪除帳號「${name}」？`))return;
+  await deleteDoc(doc(db,"users",uid)); await loadAllUsers(); renderUserList();
+};
+
+// ── 工具 ──
+async function uploadPhoto(file,path){const r=ref(storage,path);await uploadBytes(r,file,{contentType:file.type||"image/jpeg"});return getDownloadURL(r);}
+function setMsg(el,txt,isErr){el.className=isErr?"msg-err":"msg-ok";el.textContent=txt;}
+function weekDays(d){const day=d.getDay(),diff=day===0?-6:1-day,mon=new Date(d);mon.setDate(d.getDate()+diff);return Array.from({length:7},(_,i)=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return x;});}
+function fmtDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+function hhmm(d){return d.toTimeString().slice(0,5);}
+</script>
 </body>
 </html>
