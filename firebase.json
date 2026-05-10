@@ -1,51 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // 判斷是否為有效登入且未被停權的使用者
-    function isActive() {
-      return request.auth != null && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status != 'disabled';
+    match /{document=**} {
+      allow read, write: if request.auth != null;
     }
-    
-    // 判斷是否為管理員
-    function isAdmin() {
-      return isActive() && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Admin';
-    }
-
-    // 使用者資料：管理員可全部讀寫，個人只能讀取自己的
-    match /users/{userId} {
-      allow read: if isActive();
-      allow write: if isAdmin();
-    }
-
-    // 薪資相關：嚴格限制僅管理員可讀寫
-    match /salaryConfigs/{docId} {
-      allow read, write: if isAdmin();
-    }
-    match /salarySettlements/{docId} {
-      allow read, write: if isAdmin();
-    }
-
-    // 資源名冊（廠商、儲備教師、補習班）：管理員可讀寫，一般老師只能讀
-    match /institutes/{docId} {
-      allow read: if isActive();
-      allow write: if isAdmin();
-    }
-    match /reserveTeachers/{docId} {
-      allow read, write: if isAdmin();
-    }
-    match /vendors/{docId} {
-      allow read, write: if isAdmin();
-    }
-
-    // 其他日常資料：登入且未停權即可操作
-    match /schedules/{docId} { allow read, write: if isActive(); }
-    match /attendanceRecords/{docId} { allow read, write: if isActive(); }
-    match /classLogs/{docId} { allow read, write: if isActive(); }
-    match /classMessageBoards/{classId} { allow read, write: if isActive(); }
-    match /classMessageBoards/{classId}/messages/{msgId} { allow read, write: if isActive(); }
-    match /todos/{docId} { allow read, write: if isActive(); }
   }
 }
